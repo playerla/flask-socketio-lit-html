@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Users list app</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
+    <script type="module" charset="utf-8">
+        import 'https://unpkg.com/@material/mwc-button@0.6.0/mwc-button.js?module';
+        import {html, render} from 'https://unpkg.com/lit-html?module';
+        var $ = document.getElementById.bind(document);
+        function add() {
+            socket.emit('add', {
+                                username: $('username').value, 
+                                email:    $('email').value
+                            })
+        }
+        const Users = (users) => html`
+            <input id='username' value='username'>
+            <input id='email' value='email'>
+            <mwc-button unelevated label="Add" @click="${add}"></mwc-button>
+            <ul>
+                ${users.map((u) => html`<li><strong>${ u.username }</strong> ${ u.email }</li>`)}
+            </ul>`;
+        render(Users([]), document.body);
+        var socket = io();
+        socket.on('message', function(json){
+            render(Users(json), document.body);
+        });
+    </script>
+</head>
+<body>
+</body>
+</html>

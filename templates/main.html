@@ -3,32 +3,58 @@
   <head>
     <meta charset="utf-8">
     <title>Users list app</title>
-    <link rel="stylesheet" href="style.css">
     <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
     <script type="module" charset="utf-8">
         import 'https://unpkg.com/@material/mwc-button@0.6.0/mwc-button.js?module';
-        import {html, render} from 'https://unpkg.com/lit-html?module';
+        import { LitElement, html, css } from 'https://unpkg.com/lit-element?module';
         var $ = document.getElementById.bind(document);
-        function add() {
-            socket.emit('add', {
-                                username: $('username').value, 
-                                email:    $('email').value
-                            })
-        }
-        const Users = (users) => html`
-            <input id='username' value='username'>
-            <input id='email' value='email'>
-            <mwc-button unelevated label="Add" @click="${add}"></mwc-button>
-            <ul>
-                ${users.map((u) => html`<li><strong>${ u.username }</strong> ${ u.email }</li>`)}
-            </ul>`;
-        render(Users([]), document.body);
-        var socket = io();
-        socket.on('message', function(json){
-            render(Users(json), document.body);
-        });
+
+        class User extends LitElement {
+            static get properties() {
+                return {
+                    username: { 
+                        type: String,
+                    },
+                    email: { 
+                        type: Boolean,
+                    },
+                    index: { type: Number }
+                }
+            }
+            constructor() {
+                super();
+                this.username = "undefined user";
+                this.email = "undefined@example.com";
+                this.socket = io();
+                var element = this // Capturing element in the update callback
+                this.socket.on('message', function(usersList) {
+                    const last = usersList.length - 1;
+                    element.username = usersList[last].username;
+                    element.email = usersList[last].email;
+                });
+            };
+            _add() {
+                this.socket.emit('add', 
+                    {
+                        username: this.shadowRoot.getElementById('username').value, 
+                        email: this.shadowRoot.getElementById('email').value
+                    })
+            };
+            render() {
+                return html`
+                    <input id='username' value='username'>
+                    <input id='email' value='email'>
+                    <mwc-button unelevated label="Add" @click="${ this._add }"></mwc-button>
+                    <ul>
+                        <li><strong>${ this.username }</strong> ${ this.email }</li>
+                    </ul>
+                    `;
+            };
+        }        
+        window.customElements.define('user-item', User);
     </script>
 </head>
 <body>
+    <user-item></user-item>
 </body>
 </html>

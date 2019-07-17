@@ -1,5 +1,4 @@
-from flask import Flask, render_template
-from flask.views import MethodView
+from flask import Flask, render_template, request, jsonify
 from flask_sqlalchemy import Model, SQLAlchemy, event
 import sqlalchemy as sa
 from sqlalchemy.ext.declarative import declared_attr
@@ -63,14 +62,13 @@ class User(db.Model):
         db.session.commit()
         socketio.emit('update')
 
-    @app.route('/change/<int:id>/<string:prop>/<string:value>')
-    def change(id, prop, value):
-        if prop == 'id':
-            raise User.ColumnLookupError
-        db.session.execute(db.update(User).where(User.id==id).values({ prop : value }))
+    @app.route('/user/<int:id>', methods=['POST'])
+    def post(id):
+        u = request.get_json()
+        db.session.execute(db.update(User).where(User.id==id).values(**u))
         db.session.commit()
         socketio.emit('update') # Event not working with SqlAlchemyCore / db.udpate()      
-        return prop+' Changed to '+value
+        return u
 
 def render_listener(mapper, connection, target):
     socketio.emit('update')

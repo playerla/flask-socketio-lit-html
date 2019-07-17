@@ -7,6 +7,16 @@ const get = async (url) => {
         return null;
     return await response.json();
 }
+const post = async (url, json) => { 
+    const response = await fetch(url, {
+        method: 'POST',
+        headers: new Headers({ "content-type": "application/json" }),
+        body: JSON.stringify(json)
+    });
+    if (response.status == 404)
+        return null;
+    return await response.json();
+}
 
 class User extends LitElement {
     static get properties() {
@@ -44,11 +54,21 @@ class User extends LitElement {
                 email: this.shadowRoot.getElementById('email').value
             })
     };
+    _change() {
+        var id = this.shadowRoot.getElementById('id').value
+        var r = post('user/'+id, 
+        {
+            username: this.shadowRoot.getElementById('username').value, 
+            email: this.shadowRoot.getElementById('email').value
+        }).then( (user) => console.log(user) )
+    }
     render() {
         return html`
             <input id='username' value='username'>
             <input id='email' value='email'>
             <mwc-button unelevated label="Add" @click="${ this._add }"></mwc-button>
+            <input id='id' value='2'>
+            <mwc-button unelevated label="Change" @click="${ this._change }"></mwc-button>
             <ul>
                 <li><strong>${ this.username }</strong> ${ this.email }</li>
             </ul>

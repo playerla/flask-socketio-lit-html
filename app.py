@@ -1,8 +1,8 @@
 from flask import Flask, render_template
-from flask.views import View
-from flask_sqlalchemy import Model, SQLAlchemy
+from flask.views import MethodView
+from flask_sqlalchemy import Model, SQLAlchemy, event
 import sqlalchemy as sa
-from sqlalchemy.ext.declarative import declared_attr, has_inherited_table
+from sqlalchemy.ext.declarative import declared_attr
 from flask_socketio import SocketIO
 
 app = Flask(__name__)
@@ -24,6 +24,13 @@ class IdModel(Model):
             type = sa.Integer
 
         return sa.Column(type, primary_key=True)
+
+    @classmethod
+    def loop(cls):
+        for c in cls.__table__.columns:
+            print(c, type(c))
+
+    ColumnLookupError = Exception("Error during lookup sqlalchemy.sql.schema.Column")
 
 db = SQLAlchemy(app, model_class=IdModel)
 
@@ -56,16 +63,15 @@ class User(db.Model):
         db.session.commit()
         socketio.emit('update')
 
-    @app.route('/change/<int:id>/<string:newmail>')
-    def change(id, newmail):
-        u = User.query.get(id)
-        u.email = newmail
-        print('before_commit')
+    @app.route('/change/<int:id>/<string:prop>/<string:value>')
+    def change(id, prop, value):
+        if prop == 'id':
+            raise User.ColumnLookupError
+        db.session.execute(db.update(User).where(User.id==id).values({ prop : value }))
         db.session.commit()
-        print('after_commit')
-        return 'Changed to '+newmail
+        socketio.emit('update') # Event not working with SqlAlchemyCore / db.udpate()      
+        return prop+' Changed to '+value
 
-from sqlalchemy import event
 def render_listener(mapper, connection, target):
     socketio.emit('update')
 

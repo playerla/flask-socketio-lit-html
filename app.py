@@ -9,7 +9,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
 app.config['SECRET_KEY'] = 'secret'
 app.config['DEBUG'] = 'True'
 socketio = SocketIO(app)
-db = SQLAlchemy(app)
+db = SQLAlchemy(app, session_options={'autocommit': True})
 
 # https://flask-sqlalchemy.palletsprojects.com/en/2.x/customizing/
 class IdModel(Model):
@@ -55,20 +55,13 @@ class User(db.Model):
         else:
             return "Not found", 404 
 
-    @socketio.on('add')
-    def add(data):
-        new_user = User(**data)
-        db.session.add(new_user)
+    @app.route('/user', methods=['POST'])
+    def post():
+        print(request)
+        print(request.get_json())
+        u = db.session.merge(User(**request.get_json()))
         db.session.commit()
-        socketio.emit('update')
-
-    @app.route('/user/<int:id>', methods=['POST'])
-    def post(id):
-        u = request.get_json()
-        db.session.execute(db.update(User).where(User.id==id).values(**u))
-        db.session.commit()
-        socketio.emit('update') # Event not working with SqlAlchemyCore / db.udpate()      
-        return u
+        return jsonify(id=u.id)
 
 def render_listener(mapper, connection, target):
     socketio.emit('update')

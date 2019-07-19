@@ -47,26 +47,22 @@ class User extends LitElement {
             })
         });
     };
-    _add() {
-        this.socket.emit('add', 
-            {
-                username: this.shadowRoot.getElementById('username').value, 
-                email: this.shadowRoot.getElementById('email').value
-            })
-    };
-    _change() {
-        var id = this.shadowRoot.getElementById('id').value
-        var r = post('user/'+id, 
+    _post({id=null}) {
+        post('user', 
         {
+            id: id, 
             username: this.shadowRoot.getElementById('username').value, 
             email: this.shadowRoot.getElementById('email').value
         }).then( (user) => console.log(user) )
+    }
+    _change() { 
+        this._post({id:this.shadowRoot.getElementById('id').value}) 
     }
     render() {
         return html`
             <input id='username' value='username'>
             <input id='email' value='email'>
-            <mwc-button unelevated label="Add" @click="${ this._add }"></mwc-button>
+            <mwc-button unelevated label="Add" @click="${ this._post }"></mwc-button>
             <input id='id' value='2'>
             <mwc-button unelevated label="Change" @click="${ this._change }"></mwc-button>
             <ul>

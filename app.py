@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, jsonify
-from flask_sqlalchemy import Model, SQLAlchemy, event
+from flask_sqlalchemy import Model, SQLAlchemy
 import sqlalchemy as sa
 from sqlalchemy.ext.declarative import declared_attr
 from flask_socketio import SocketIO
@@ -8,16 +8,16 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
 app.config['SECRET_KEY'] = 'secret'
 app.config['DEBUG'] = 'True'
-socketio = SocketIO(app)
+socketio = SocketIO(app, engineio_logger=True)
 db = SQLAlchemy(app, session_options={'autocommit': True})
 
 # https://flask-sqlalchemy.palletsprojects.com/en/2.x/customizing/
-class IdModel(Model):
+class IndexModel(Model):
     @declared_attr
-    def id(cls):
+    def index(cls):
         for base in cls.__mro__[1:-1]:
             if getattr(base, '__table__', None) is not None:
-                type = sa.ForeignKey(base.id)
+                type = sa.ForeignKey(base.index)
                 break
         else:
             type = sa.Integer
@@ -31,7 +31,7 @@ class IdModel(Model):
 
     ColumnLookupError = Exception("Error during lookup sqlalchemy.sql.schema.Column")
 
-db = SQLAlchemy(app, model_class=IdModel)
+db = SQLAlchemy(app, model_class=IndexModel)
 
 class User(db.Model):
     username = db.Column(db.String(80), nullable=False)
@@ -39,17 +39,15 @@ class User(db.Model):
 
     @app.route('/user')
     def user():
-        return render_template('user.js'), { 'Content-Type': "text/javascript; charset=utf-8" }
+        return render_template('user.js', ioupdate=str(User)+'update'), { 'Content-Type': "text/javascript; charset=utf-8" }
 
     @app.route('/users')
     def list_users():
-        return { 'list': 
-            [ {'username': u.username, 'email': u.email } for u in User.query.all() ] 
-        }
+        return { 'users': db.session.query(User.index).all() } 
 
-    @app.route('/user/<int:id>')
-    def get(id):
-        u = User.query.get(id)
+    @app.route('/user/<int:index>')
+    def get(index):
+        u = User.query.get(index)
         if u:
             return {'username': u.username, 'email': u.email }
         else:
@@ -57,17 +55,10 @@ class User(db.Model):
 
     @app.route('/user', methods=['POST'])
     def post():
-        print(request)
-        print(request.get_json())
         u = db.session.merge(User(**request.get_json()))
         db.session.commit()
-        return jsonify(id=u.id)
-
-def render_listener(mapper, connection, target):
-    socketio.emit('update')
-
-event.listen(User, 'after_insert', render_listener)
-event.listen(User, 'after_update', render_listener)
+        socketio.emit(str(User)+'update', u.index)
+        return jsonify(index=u.index)
 
 open("app.db", 'w').close()
 db.create_all()

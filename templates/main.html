@@ -1,14 +1,14 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <title>Users list app</title>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
-    <script type="module" src="{{url_for('user')}}"></script>
-</head>
-<body>
-    <div> user 2: <user-item index=2 ></user-item></div>
+{% extends "bootstrap/base.html" %}
+{% block title %}Users list app{% endblock %}
+{% block scripts %}
+<script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
+<script type="module" src="{{url_for('user')}}"></script>
+{{super()}}
+{% endblock %}
+{% block content %}
+<div class="container">
+  <div> user 2: <user-item index=2 ></user-item></div>
     <hr />
-    <ul-users></ul-users>
-</body>
-</html>
+  <ul-users></ul-users>
+</div>
+{% endblock %}

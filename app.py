@@ -3,8 +3,10 @@ from flask_sqlalchemy import Model, SQLAlchemy
 import sqlalchemy as sa
 from sqlalchemy.ext.declarative import declared_attr
 from flask_socketio import SocketIO
+from flask_bootstrap import Bootstrap
 
 app = Flask(__name__)
+Bootstrap(app)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
 app.config['SECRET_KEY'] = 'secret'
 app.config['DEBUG'] = 'True'

@@ -98,14 +98,24 @@ class Users extends LitElement {
     }
     render() {
         return html`
-        <input id='username' value='username'>
-        <input id='email' value='email'>
-        <mwc-button unelevated label="Add" @click="${ this._post }"></mwc-button>
-        <input id='index' value='2'>
-        <mwc-button unelevated label="Change" @click="${ this._change }"></mwc-button>
+        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" >
+        <form onsubmit="return false;">
+            <div class="form-group">
+                <label for="username">Name</label>
+                <input type="text" class="form-control input-lg" id="username" value="Name">
+            </div>
+            <div class="form-group">
+                <label for="email">Email address</label>
+                <input type="email" class="form-control input-lg" id="email" aria-describedby="emailHelp" value="name@example.com">
+                <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+            </div>
+            <button class="btn btn-primary" @click="${ this._post }">Add</button>
+        </form>
         <ul>
            ${ this.users.map((index) => html`<li><user-item index="${ index }" ></user-item></li>`) }
-        </ul>`;
+        </ul>
+        <input id='index' value='2'>
+        <mwc-button unelevated label="Change" @click="${ this._change }"></mwc-button>`;
     }
 }
 window.customElements.define('ul-users', Users);

@@ -2,7 +2,7 @@
 {% block title %}Users list app{% endblock %}
 {% block scripts %}
 <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
-<script type="module" src="{{url_for('user')}}"></script>
+<script type="module" src="{{url_for('users.user')}}"></script>
 {{super()}}
 {% endblock %}
 {% block content %}

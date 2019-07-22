@@ -35,19 +35,19 @@ class Item extends LitElement {
         }
     }
     _get() { 
-        get('{{ base_url }}'+'/'+this.index).then(user => {
-            if(user) {
-                this.username = user.username;
-                this.email = user.email;
+        get('{{ base_url }}'+'/'+this.index).then(item => {
+            if(item) {
+                this.username = item.username;
+                this.email = item.email;
                 console.log(this.index, 'loaded')
             }
             else
-                console.log("undefined user ", this.index);
+                console.log("undefined item ", this.index);
     })}
     updated(changedProperties) {
         if (changedProperties.has('index')) {
             console.log(this.index, 'index updated')
-            // get the new user referenced by the primary key this.index
+            // get the new item referenced by the primary key this.index
             this._get();
         }
     }
@@ -65,7 +65,7 @@ class Item extends LitElement {
         return html`<strong>${ this.username }</strong> ${ this.email }`;
     };
 }    
-window.customElements.define('user-item', Item);
+window.customElements.define('{{ component_name }}', Item);
 
 class Items extends LitElement {
     static get properties() {
@@ -112,10 +112,10 @@ class Items extends LitElement {
             <button class="btn btn-primary" @click="${ this._post }">Add</button>
         </form>
         <ul>
-           ${ this.items.map((index) => html`<li><user-item index="${ index }" ></user-item></li>`) }
+           ${ this.items.map((index) => html`<li><{{ component_name }} index="${ index }" ></{{ component_name }}></li>`) }
         </ul>
         <input id='index' value='2'>
         <mwc-button unelevated label="Change" @click="${ this._change }"></mwc-button>`;
     }
 }
-window.customElements.define('ul-user-item', Items);
+window.customElements.define('ul-{{ component_name }}', Items);

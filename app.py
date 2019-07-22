@@ -19,13 +19,18 @@ class IndexModel(Model):
     __abstract__ = True
     
     @classmethod
-    def register(cls, name):
-        cls.blueprint = Blueprint(name, __name__, template_folder='webcomponent_templates')
-        cls.blueprint.add_url_rule('/user', view_func=IndexModel.template)
-        cls.blueprint.add_url_rule('/user/<int:index>', view_func=IndexModel.get, defaults = { 'cls': cls })
-        cls.blueprint.add_url_rule('/user', view_func=IndexModel.post, defaults={ 'cls': cls }, methods=['POST'])
-        cls.blueprint.add_url_rule('/user/all', view_func=IndexModel.get_list, defaults={ 'cls': cls })
-        return cls.blueprint
+    def register(cls, base_url, component_name):
+        blueprint = Blueprint(component_name, __name__, template_folder='webcomponent_templates')
+        blueprint.add_url_rule(base_url, view_func=IndexModel.webcomponent, defaults = {
+            # Variable for the webcoponent_base.js
+            'ioupdate': str(cls)+'update',
+            'component_name': component_name,
+            'base_url': base_url,
+        })
+        blueprint.add_url_rule(base_url+'/<int:index>', view_func=IndexModel.get, defaults = { 'cls': cls })
+        blueprint.add_url_rule(base_url, view_func=IndexModel.post, defaults={ 'cls': cls }, methods=['POST'])
+        blueprint.add_url_rule(base_url+'/all', view_func=IndexModel.get_all, defaults={ 'cls': cls })
+        return blueprint
         
     @declared_attr
     def index(cls):
@@ -38,8 +43,8 @@ class IndexModel(Model):
 
         return sa.Column(type, primary_key=True)
     
-    def template():
-        return render_template('webcomponent_base.js', ioupdate=str(User)+'update'), { 'Content-Type': "text/javascript; charset=utf-8" }
+    def webcomponent(**env):
+        return render_template('webcomponent_base.js', **env), { 'Content-Type': "text/javascript; charset=utf-8" }
 
     # https://stackoverflow.com/a/11884806
     def _asdict(self):
@@ -55,7 +60,7 @@ class IndexModel(Model):
         socketio.emit(str(cls)+'update', item.index)
         return jsonify(index=item.index)
 
-    def get_list(cls):
+    def get_all(cls):
         return { 'items': db.session.query(cls.index).all() }
 
 db = SQLAlchemy(app, model_class=IndexModel)
@@ -71,7 +76,7 @@ db.create_all()
 def all_exception_handler(error):
     return app.send_static_file('404.html'), 404
     
-blueprint = User.register("users")
+blueprint = User.register("/user", "user-item")
 app.register_blueprint(blueprint)
 
 @app.route('/')

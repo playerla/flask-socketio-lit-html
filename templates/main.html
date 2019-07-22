@@ -2,13 +2,13 @@
 {% block title %}Users list app{% endblock %}
 {% block scripts %}
 <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
-<script type="module" src="{{url_for('users.template')}}"></script>
+<script type="module" src="{{url_for('user-item.webcomponent')}}"></script>
 {{super()}}
 {% endblock %}
 {% block content %}
 <div class="container">
   <div> user 2: <user-item index=2 ></user-item></div>
     <hr />
-  <ul-users></ul-users>
+  <ul-user-item></ul-user-item>
 </div>
 {% endblock %}

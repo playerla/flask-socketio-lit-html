@@ -20,7 +20,7 @@ const post = async (url, json) => {
     return await response.json();
 }
 
-class User extends LitElement {
+class Item extends LitElement {
     static get properties() {
         return {
             username: { 
@@ -35,7 +35,7 @@ class User extends LitElement {
         }
     }
     _get() { 
-        get('user/'+this.index).then(user => {
+        get('{{ base_url }}'+'/'+this.index).then(user => {
             if(user) {
                 this.username = user.username;
                 this.email = user.email;
@@ -65,9 +65,9 @@ class User extends LitElement {
         return html`<strong>${ this.username }</strong> ${ this.email }`;
     };
 }    
-window.customElements.define('user-item', User);
+window.customElements.define('user-item', Item);
 
-class Users extends LitElement {
+class Items extends LitElement {
     static get properties() {
         return {
             items: { 
@@ -80,13 +80,13 @@ class Users extends LitElement {
         this.items = [];
         var element = this // Capturing element in the update callback
         io_socket.on("{{ ioupdate }}", function() {
-            get('user/all').then(json => {
+            get('{{ base_url }}'+'/all').then(json => {
                 element.items = json.items 
             });
         });
     };
     _post({index=null}) {
-        post('user', 
+        post('{{ base_url }}',
         {
             index: index, 
             username: this.shadowRoot.getElementById('username').value, 
@@ -118,4 +118,4 @@ class Users extends LitElement {
         <mwc-button unelevated label="Change" @click="${ this._change }"></mwc-button>`;
     }
 }
-window.customElements.define('ul-users', Users);
+window.customElements.define('ul-user-item', Items);

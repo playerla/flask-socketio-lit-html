@@ -24,6 +24,7 @@ class IndexModel(Model):
         print(cls)
         blueprint.add_url_rule('/meta', view_func=IndexModel.loop, defaults = { 'cls': cls })
         blueprint.add_url_rule('/user/<int:index>', view_func=IndexModel.get, defaults = { 'cls': cls })
+        blueprint.add_url_rule('/user', view_func=IndexModel.post, defaults={ 'cls': cls }, methods=['POST'])
         
     @declared_attr
     def index(cls):
@@ -46,6 +47,12 @@ class IndexModel(Model):
         else:
             return "Not found", 404
 
+    def post(cls):
+        u = db.session.merge(cls(**request.get_json()))
+        db.session.commit()
+        socketio.emit(str(cls)+'update', u.index)
+        return jsonify(index=u.index)
+
 db = SQLAlchemy(app, model_class=IndexModel)
 
 class User(db.Model):
@@ -59,13 +66,6 @@ class User(db.Model):
     @bp_users.route('/users')
     def list_users():
         return { 'users': db.session.query(User.index).all() } 
-
-    @bp_users.route('/user', methods=['POST'])
-    def post():
-        u = db.session.merge(User(**request.get_json()))
-        db.session.commit()
-        socketio.emit(str(User)+'update', u.index)
-        return jsonify(index=u.index)
 
 open("app.db", 'w').close()
 db.create_all()

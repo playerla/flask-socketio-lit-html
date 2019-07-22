@@ -70,18 +70,18 @@ window.customElements.define('user-item', User);
 class Users extends LitElement {
     static get properties() {
         return {
-            users: { 
+            items: { 
                 type: Array
             }
         }
     }
     constructor() {
         super();
-        this.users = [];
+        this.items = [];
         var element = this // Capturing element in the update callback
         io_socket.on("{{ ioupdate }}", function() {
-            get('users').then(json => { 
-                element.users = json.users 
+            get('user/all').then(json => {
+                element.items = json.items 
             });
         });
     };
@@ -112,7 +112,7 @@ class Users extends LitElement {
             <button class="btn btn-primary" @click="${ this._post }">Add</button>
         </form>
         <ul>
-           ${ this.users.map((index) => html`<li><user-item index="${ index }" ></user-item></li>`) }
+           ${ this.items.map((index) => html`<li><user-item index="${ index }" ></user-item></li>`) }
         </ul>
         <input id='index' value='2'>
         <mwc-button unelevated label="Change" @click="${ this._change }"></mwc-button>`;

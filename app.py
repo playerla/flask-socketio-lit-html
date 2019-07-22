@@ -13,18 +13,19 @@ app.config['DEBUG'] = 'True'
 socketio = SocketIO(app, engineio_logger=True)
 db = SQLAlchemy(app, session_options={'autocommit': True})
 
-bp_users = Blueprint('users', __name__, template_folder='users_template')
 
 # https://flask-sqlalchemy.palletsprojects.com/en/2.x/customizing/
 class IndexModel(Model):
     __abstract__ = True
     
     @classmethod
-    def register(cls, blueprint):
-        print(cls)
-        blueprint.add_url_rule('/meta', view_func=IndexModel.loop, defaults = { 'cls': cls })
-        blueprint.add_url_rule('/user/<int:index>', view_func=IndexModel.get, defaults = { 'cls': cls })
-        blueprint.add_url_rule('/user', view_func=IndexModel.post, defaults={ 'cls': cls }, methods=['POST'])
+    def register(cls, name):
+        cls.blueprint = Blueprint(name, __name__, template_folder='webcomponent_templates')
+        cls.blueprint.add_url_rule('/user', view_func=IndexModel.template)
+        cls.blueprint.add_url_rule('/user/<int:index>', view_func=IndexModel.get, defaults = { 'cls': cls })
+        cls.blueprint.add_url_rule('/user', view_func=IndexModel.post, defaults={ 'cls': cls }, methods=['POST'])
+        cls.blueprint.add_url_rule('/user/all', view_func=IndexModel.get_list, defaults={ 'cls': cls })
+        return cls.blueprint
         
     @declared_attr
     def index(cls):
@@ -37,35 +38,31 @@ class IndexModel(Model):
 
         return sa.Column(type, primary_key=True)
     
-    def loop(cls):
-        return { i.index : i._asdict() for i in db.session.query(*cls.__table__.columns) }
+    def template():
+        return render_template('webcomponent_base.js', ioupdate=str(User)+'update'), { 'Content-Type': "text/javascript; charset=utf-8" }
+
+    # https://stackoverflow.com/a/11884806
+    def _asdict(self):
+       return {c.name: getattr(self, c.name) for c in self.__table__.columns}
 
     def get(cls, index):
-        u = db.session.query(cls).filter(cls.index==index).first()
-        if u:
-            return {'username': u.username, 'email': u.email }
-        else:
-            return "Not found", 404
+        item = db.session.query(cls).filter(cls.index==index).first()
+        return item._asdict() if item else ("Not found", 404)
 
     def post(cls):
-        u = db.session.merge(cls(**request.get_json()))
+        item = db.session.merge(cls(**request.get_json()))
         db.session.commit()
-        socketio.emit(str(cls)+'update', u.index)
-        return jsonify(index=u.index)
+        socketio.emit(str(cls)+'update', item.index)
+        return jsonify(index=item.index)
+
+    def get_list(cls):
+        return { 'items': db.session.query(cls.index).all() }
 
 db = SQLAlchemy(app, model_class=IndexModel)
 
 class User(db.Model):
     username = db.Column(db.String(80), nullable=False)
     email = db.Column(db.String(120), nullable=False)
-
-    @bp_users.route('/user')
-    def user():
-        return render_template('user.js', ioupdate=str(User)+'update'), { 'Content-Type': "text/javascript; charset=utf-8" }
-
-    @bp_users.route('/users')
-    def list_users():
-        return { 'users': db.session.query(User.index).all() } 
 
 open("app.db", 'w').close()
 db.create_all()
@@ -74,8 +71,8 @@ db.create_all()
 def all_exception_handler(error):
     return app.send_static_file('404.html'), 404
     
-User.register(bp_users)
-app.register_blueprint(bp_users)
+blueprint = User.register("users")
+app.register_blueprint(blueprint)
 
 @app.route('/')
 def main():

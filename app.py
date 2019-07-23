@@ -19,13 +19,15 @@ class IndexModel(Model):
     __abstract__ = True
     
     @classmethod
-    def register(cls, base_url, component_name):
+    def register(cls, base_url, component_name, template='webcomponent_base.js'):
         blueprint = Blueprint(component_name, __name__, template_folder='webcomponent_templates')
         blueprint.add_url_rule(base_url, view_func=IndexModel.webcomponent, defaults = {
             # Variable for the webcoponent_base.js
             'ioupdate': str(cls)+'update',
             'component_name': component_name,
             'base_url': base_url,
+            'properties': [ c.name for c in cls.__table__.columns ],
+            'template': template
         })
         blueprint.add_url_rule(base_url+'/<int:index>', view_func=IndexModel.get, defaults = { 'cls': cls })
         blueprint.add_url_rule(base_url, view_func=IndexModel.post, defaults={ 'cls': cls }, methods=['POST'])
@@ -44,7 +46,7 @@ class IndexModel(Model):
         return sa.Column(type, primary_key=True)
     
     def webcomponent(**env):
-        return render_template('webcomponent_base.js', **env), { 'Content-Type': "text/javascript; charset=utf-8" }
+        return render_template(env['template'], **env), { 'Content-Type': "text/javascript; charset=utf-8" }
 
     # https://stackoverflow.com/a/11884806
     def _asdict(self):
@@ -76,7 +78,7 @@ db.create_all()
 def all_exception_handler(error):
     return app.send_static_file('404.html'), 404
     
-blueprint = User.register("/user", "user-item")
+blueprint = User.register("/user", "user-item", "user.html")
 app.register_blueprint(blueprint)
 
 @app.route('/')

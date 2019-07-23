@@ -23,22 +23,19 @@ const post = async (url, json) => {
 class Item extends LitElement {
     static get properties() {
         return {
-            username: { 
-                type: String,
+            {% for property in properties %}
+            {{ property }}: {
+                type: String
             },
-            email: { 
-                type: Boolean,
-            },
-            index: { 
-                type: Number,
-            }
+            {% endfor %}
         }
     }
     _get() { 
         get('{{ base_url }}'+'/'+this.index).then(item => {
             if(item) {
-                this.username = item.username;
-                this.email = item.email;
+                for (const property in item) {
+                    this[property] = item[property]
+                }
                 console.log(this.index, 'loaded')
             }
             else
@@ -62,7 +59,11 @@ class Item extends LitElement {
         });
     };
     render() {
-        return html`<strong>${ this.username }</strong> ${ this.email }`;
+        return html`
+        {% block render %}
+        Your item <strong> ${ this.index } </strong> rendered here
+        {% endblock %}
+        `;
     };
 }    
 window.customElements.define('{{ component_name }}', Item);

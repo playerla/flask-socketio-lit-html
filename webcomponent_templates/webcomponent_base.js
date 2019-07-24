@@ -30,12 +30,16 @@ class Item extends LitElement {
             {% endfor %}
         }
     }
+    _set(properties) {
+        {% for property in properties %}
+        this.{{ property }} = properties.{{ property }};
+        {% endfor %}
+        return this;
+    }
     _get() { 
         get('{{ base_url }}'+'/'+this.index).then(item => {
             if(item) {
-                for (const property in item) {
-                    this[property] = item[property]
-                }
+                this._set(item);
                 console.log(this.index, 'loaded')
             }
             else
@@ -78,21 +82,39 @@ class Items extends LitElement {
     static get properties() {
         return {
             items: { 
-                type: Array
+                type: Object
             }
         }
     }
     constructor() {
         super();
-        this.items = [];
+        this.items = {};
         var element = this // Capturing element in the update callback
-        io_socket.on("{{ ioupdate }}", function() {
+        io_socket.on("{{ ioupdate }}", function(index_update) {
+            if (element.items[index_update] == undefined)
+                element._posted({index: index_update});
             get('{{ base_url }}'+'/all').then(json => {
-                element.items = json.items 
+                // Removing all removed items
+                for (var index in element.items) {
+                    if (!element.items[index].index in json.items) {
+                        element.items[index].remove();
+                        element.items[index] = undefined;
+                    }
+                }
             });
         });
     };
-    _post({index=null}) {
+    firstUpdated() {
+        this.$ul = this.shadowRoot.querySelector('ul');
+    }
+    _posted(properties) {
+        var child = document.createElement('{{ component_name }}')._set(properties);
+        this.items[properties.index] = child;
+        var $li = document.createElement('li');
+        $li.appendChild(child)
+        this.$ul.appendChild($li);
+    }
+    _add({index=null}) {
         post('{{ base_url }}',
         {
             index: index, 
@@ -101,7 +123,7 @@ class Items extends LitElement {
         });
     }
     _change() { 
-        this._post({index:this.shadowRoot.getElementById('index').value}) ;
+        this._add({index:this.shadowRoot.getElementById('index').value}) ;
     }
     render() {
         return html`
@@ -116,10 +138,9 @@ class Items extends LitElement {
                 <input type="email" class="form-control input-lg" id="email" aria-describedby="emailHelp" value="name@example.com">
                 <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
             </div>
-            <button class="btn btn-primary" @click="${ this._post }">Add</button>
+            <button class="btn btn-primary" @click="${ this._add }">Add</button>
         </form>
         <ul>
-           ${ this.items.map((index) => html`<li><{{ component_name }} index="${ index }" ></{{ component_name }}></li>`) }
         </ul>
         <input id='index' value='2'>
         <mwc-button unelevated label="Change" @click="${ this._change }"></mwc-button>`;

@@ -58,6 +58,12 @@ class Item extends LitElement {
             }
         });
     };
+    static get styles() {
+        return css`
+        {% block style %}
+        {% endblock %}        
+        `;
+    }
     render() {
         return html`
         {% block render %}

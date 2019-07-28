@@ -57,7 +57,6 @@ class IndexModel(Model):
         return item._asdict() if item else ("Not found", 404)
 
     def post(cls):
-        print('post', request.get_json())
         item = db.session.merge(cls(**request.get_json()))
         db.session.commit()
         socketio.emit(str(cls)+'update', item.index)

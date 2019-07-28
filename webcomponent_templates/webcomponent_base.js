@@ -29,20 +29,19 @@ class Item extends LitElement {
             },
             {% endfor %}
         }
-    };
+    }
     _set(properties) {
         {% for property in properties %}
-            this.{{ property }} = properties.{{ property }};
+        this.{{ property }} = properties.{{ property }};
         {% endfor %}
     };
-    newItem(properties) {
-        post('{{ base_url }}', properties).then(json => this.index = json.index);
+    async newItem(properties) {
+        await post('{{ base_url }}', properties).then(json => this.index = json.index);
         console.log('new', this.index);
         return this;
-        console.log('exec2');
     };
-    update() {
-        console.log('update!!!!!');
+    set() {
+        console.log('post for', this.index, this.username);
         post('{{ base_url }}', {
         {% for property in properties %}
            {{ property }}: this.{{ property }},
@@ -53,27 +52,27 @@ class Item extends LitElement {
         get('{{ base_url }}'+'/'+this.index).then(item => {
             if(item) {
                 this._set(item);
-                console.log(this.index, 'loaded')
+                console.log(this.index, 'loaded:', item)
             }
             else
                 console.log("undefined item ", this.index);
-    })};
+    })}
     updated(changedProperties) {
         if (changedProperties.has('index')) {
             console.log(this.index, 'index updated')
             // get the new item referenced by the primary key this.index
             this._get();
         }
-    };
+    }
     constructor() {
         super();
         var element = this // Capturing element in the update callback
         io_socket.on("{{ ioupdate }}", function(index) {
             if (index == element.index) {
-                console.log('update for', index);
                 element._get();
             }
         });
+        this._get();
     };
     static get styles() {
         return css`
@@ -102,26 +101,35 @@ class Items extends LitElement {
     constructor() {
         super();
         this.items = {};
+        var items = this; // Capturing element in the update callback
+        io_socket.on("{{ ioupdate }}", function(index_update) {
+            if (items.items[index_update] == undefined) {
+                items.items[index_update] = document.createElement('{{ component_name }}');
+                items.items[index_update].index = index_update;
+                var $li = document.createElement('li');
+                $li.appendChild(items.items[index_update])
+                items.$ul.appendChild($li);            
+            }
+        });
     };
     firstUpdated() {
         this.$ul = this.shadowRoot.querySelector('ul');
     }
-    data() {
-        return {
-           username: this.shadowRoot.getElementById('username').value, 
-            email: this.shadowRoot.getElementById('email').value
-        }
-    }
     add_event() {
-        var child = document.createElement('{{ component_name }}').newItem(this.data()).then( (newItem) => {
-            this.items[newItem.index] = newItem;
-            var $li = document.createElement('li');
-            $li.appendChild(newItem)
-            this.$ul.appendChild($li);
+        var child = document.createElement('{{ component_name }}').newItem({
+                username: this.shadowRoot.getElementById('username').value, 
+                email: this.shadowRoot.getElementById('email').value
+            })
+            .then( (newItem) => {
+                console.log("item", newItem.index, 'has been created');
         });
     }
     change_event() { 
-        this.items({index:this.shadowRoot.getElementById('index').value}) ;
+        var item = this.items[this.shadowRoot.getElementById('index').value];
+        item.username = this.shadowRoot.getElementById('username').value;
+        console.log('item.username', item.username)
+        item.email = this.shadowRoot.getElementById('email').value;
+        item.set();
     }
     render() {
         return html`

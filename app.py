@@ -8,8 +8,6 @@ from flask_bootstrap import Bootstrap
 app = Flask(__name__)
 Bootstrap(app)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
-app.config['SECRET_KEY'] = 'secret'
-app.config['DEBUG'] = 'True'
 socketio = SocketIO(app, engineio_logger=True)
 db = SQLAlchemy(app, session_options={'autocommit': True})
 

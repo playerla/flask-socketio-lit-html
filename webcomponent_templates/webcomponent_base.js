@@ -41,7 +41,6 @@ class Item extends LitElement {
         return this;
     };
     set() {
-        console.log('post for', this.index, this.username);
         post('{{ base_url }}', {
         {% for property in properties %}
            {{ property }}: this.{{ property }},
@@ -59,7 +58,6 @@ class Item extends LitElement {
     })}
     updated(changedProperties) {
         if (changedProperties.has('index')) {
-            console.log(this.index, 'index updated')
             // get the new item referenced by the primary key this.index
             this._get();
         }
@@ -68,9 +66,8 @@ class Item extends LitElement {
         super();
         var element = this // Capturing element in the update callback
         io_socket.on("{{ ioupdate }}", function(index) {
-            if (index == element.index) {
+            if (index == element.index)
                 element._get();
-            }
         });
         this._get();
     };
@@ -127,7 +124,6 @@ class Items extends LitElement {
     change_event() { 
         var item = this.items[this.shadowRoot.getElementById('index').value];
         item.username = this.shadowRoot.getElementById('username').value;
-        console.log('item.username', item.username)
         item.email = this.shadowRoot.getElementById('email').value;
         item.set();
     }

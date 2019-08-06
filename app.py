@@ -14,6 +14,7 @@ db = SQLAlchemy(app, session_options={'autocommit': True})
 
 # https://flask-sqlalchemy.palletsprojects.com/en/2.x/customizing/
 class IndexModel(Model):
+    """Generate a Webcoponent class based on sqlalchemy""" 
     __abstract__ = True
     
     @classmethod
@@ -83,4 +84,5 @@ app.register_blueprint(blueprint)
 def main():
     return render_template('main.html')
 
-socketio.run(app)
+if __name__ == "__main__":
+    socketio.run(app)

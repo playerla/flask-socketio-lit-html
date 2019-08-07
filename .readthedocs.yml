@@ -9,6 +9,4 @@ sphinx:
   configuration: docs/source/conf.py
 python:
    install:
-      - method: pip
-        extra_requirements:
-           - sphinx>2
+    - requirements: docs/requirements.txt

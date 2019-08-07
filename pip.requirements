@@ -2,5 +2,3 @@ flask
 flask-sqlalchemy
 flask-socketio
 flask-bootstrap
-sphinx
-sphinx_rtd_theme

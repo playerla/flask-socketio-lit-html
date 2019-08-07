@@ -1,1 +1,6 @@
 sphinx>2
+sphinx_rtd_theme
+flask
+flask-sqlalchemy
+flask-socketio
+flask-bootstrap

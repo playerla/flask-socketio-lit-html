@@ -1,0 +1,12 @@
+tasks:
+  - init: pip3 install -r pip.requirements
+  - init: pip3 install -r docs/requirements.txt
+  - command: python3 app.py
+# Ports to expose on workspace startup (optional)
+ports:
+  - port: 5000
+    onOpen: open-preview
+
+vscode:
+  extensions:
+    - lextudio.restructuredtext@113.0.0:NItDcB4gcfFOXK3wya9qrw==

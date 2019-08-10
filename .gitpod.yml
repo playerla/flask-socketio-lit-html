@@ -1,6 +1,5 @@
 tasks:
-  - init: pip3 install -r pip.requirements
-  - init: pip3 install -r docs/requirements.txt
+  - before: pip3 install -r pip.requirements -r docs/requirements.txt
   - command: python3 app.py
 # Ports to expose on workspace startup (optional)
 ports:

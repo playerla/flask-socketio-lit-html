@@ -37,4 +37,4 @@ This code represent the idea behind the module, it's not real code, look at app.
 
 ## Contribute : Pull requests are welcome !
 
-[![Edit with Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/badges/shields)
+[![Edit with Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/playerla/flask-socketio-lit-html/tree/Dev)

@@ -1,5 +1,39 @@
-# Contribute : Pull requests are welcome !
+[![ForTheBadge uses-badges](https://img.shields.io/badge/uses-flask-4ab?style=for-the-badge&labelColor=4cd)](https://lit-html.polymer-project.org/)
+[![ForTheBadge uses-badges](https://img.shields.io/badge/uses-lit%20html-4ab?style=for-the-badge&labelColor=4cd)](https://lit-html.polymer-project.org/)
+[![ForTheBadge uses-badges](https://img.shields.io/badge/uses-Socket.IO-4ab?style=for-the-badge&labelColor=4cd)](https://socket.io/)
 
-[Dev branch on Gitpod IO Workspace](https://gitpod.io/#https://github.com/playerla/flask-socketio-lit-html/tree/Dev)
+[![License: MIT](https://img.shields.io/badge/version-alpha-yellow?style=for-the-badge)](.)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
+[![Pypi version](https://img.shields.io/pypi/v/flask-socketio-lit-html?style=for-the-badge)](.)
+[![ReadTheDocs](https://readthedocs.org/projects/flask-socketio-lit-html/badge/?version=latest&style=for-the-badge)](https://flask-socketio-lit-html.readthedocs.io/)
 
-Recommended plugin: [reStructuredText](https://marketplace.visualstudio.com/_apis/public/gallery/publishers/lextudio/vsextensions/restructuredtext/113.0.0/vspackage)
+# Flask-Socket.IO-lit-html
+
+Webcomponents with Flask and SocketIO
+
+## Proof of concept project to use Webcoponents in Python Flask
+
+* Generate a restful API (inspired from Flask-Restful)
+* Update html on data changes through socketio (Inspired from Angular properties reflection)
+
+## Usage philosophy
+
+Create user webcoponent from sqlalchemy design:
+```python
+class User(db.Model):
+    username = db.Column(db.String(80), nullable=False)
+
+blueprint = User.register("/user", "user-item", "user.html")
+app.register_blueprint(blueprint)
+```
+Display the second user of your database:
+```html
+<script type="module" src="{{url_for('user-item.webcomponent')}}"></script>
+<div> user 2: <user-item index=2 ></user-item></div>
+```
+
+This code represent the idea behind the module, it's not real code, look at app.py for a working example.
+
+## Contribute : Pull requests are welcome !
+
+[![Edit with Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/badges/shields)

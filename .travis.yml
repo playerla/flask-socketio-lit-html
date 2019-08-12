@@ -3,5 +3,5 @@ language: python
 python:
   - "3.7"
 install:
-  - pip3 install -r pip.requirements
-script: python3 -m pytest
+  - pip3 install -r pip.requirements poetry
+script: python3 -m pytest && poetry build && poetry publish

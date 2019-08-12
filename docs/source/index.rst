@@ -14,4 +14,4 @@ Indices and tables
 * :ref:`modindex`
 * :ref:`search`
 
-My new docs !!!
+Welcome to Alpha 0.1.0!

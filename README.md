@@ -45,8 +45,9 @@ This code represent the idea behind the module, it's not real code, look at app.
 cd docs && sphinx-apidoc -o source/ ../flask_socketio_lit_html
 ```
 
-### Build package
+### Build and publish package
 
 ```sh
 poetry build
 ```
+Just increment the version to publish after tests are succesfully passed

@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "flask-socketio-lit-html"
-version = "0.1.0rc1"
+version = "0.1.0rc2"
 description = "Simple Webcomponents with flask"
 authors = ["playerla <playerla.94@gmail.com>"]
 

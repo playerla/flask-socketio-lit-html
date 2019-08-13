@@ -5,3 +5,4 @@ webcomponent\_base module
    :members:
    :undoc-members:
    :show-inheritance:
+   :exclude-members: index

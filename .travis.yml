@@ -4,7 +4,17 @@ python:
 - '3.7'
 install:
 - pip3 install -r pip.requirements poetry
-script: python3 -m pytest && poetry publish --build -u playerla -p $pypipassword
+script: python3 -m pytest
+before_deploy:
+  - git config --global user.email "builds@travis-ci.com"
+  - git config --global user.name "Travis CI"
+  - export GIT_TAG=v$(sed -n 's/version.*"\(0[^"]*\)"/\1/p' pyproject.toml)
+  - git tag $GIT_TAG
+  - git push -q https://$publicrepotoken@github.com/playerla/flask-socketio-lit-html --tags
+deploy:
+    provider: script
+    script: poetry publish --build -u playerla -p $pypipassword
 env:
   global:
-    secure: pudhNSiCuGJs0+I/SzroFcyvdr843DUt5owu9iUfvaFO9U7IhoZ80kMYCbnxPS3+6GftG1TjlTiJTIEHRP4ErEEyAmDDCLwOMaQ9uSkDS/LpqJe0Q46zDs7TXZG+AMiDQHojIaiqH32rMq6STsacISkyv7wexJFkRrN3V2KgkfMI1CUwpVVxdyZOv+YZb2YWYHOQPKV7vsXYVishC2D5fcsRsj+uOj0kn3UmMOT9V6Ysc1pTG9nBqMYvS8o6I5Jmo20R5Xza69ATmzjyJd6AYXhqcEFb5Cf/arqKDnfl7SKzHfp7git21qibkg+PelMsws/mN37UF3ceYEKvolfJTH+5LOUYUURSe4LhAPVwq66bZLn0r9Gcp+wAyJqWRx8k+uVJA5+/iOx3/vtGiI90V9oyf4gv4KWYhnvCiyrI0+zixB0+StD0QHBYa0DyzCsHtfLgss6JVtbf19qVmRtEmb1Kuc/3QmBPgasYR3e7RsaRAyEHLagaF9BZkMip3JJQ1UDy1x6lVECaC0f7tabfT170cMwGDbNsKUy6Kock6/iAEUWYGFJC5yQuObUiyNyiiCbFmBGfg+uMrvzZuyw6FV1EsdpfK2eTj4YoVaFE39ApZSeE5wbLlMTPf3gWKXY6z/IvYSILz50ckmfBep5PSXL/SRKcG0SRax7O7DFihv4=
+    - secure: pudhNSiCuGJs0+I/SzroFcyvdr843DUt5owu9iUfvaFO9U7IhoZ80kMYCbnxPS3+6GftG1TjlTiJTIEHRP4ErEEyAmDDCLwOMaQ9uSkDS/LpqJe0Q46zDs7TXZG+AMiDQHojIaiqH32rMq6STsacISkyv7wexJFkRrN3V2KgkfMI1CUwpVVxdyZOv+YZb2YWYHOQPKV7vsXYVishC2D5fcsRsj+uOj0kn3UmMOT9V6Ysc1pTG9nBqMYvS8o6I5Jmo20R5Xza69ATmzjyJd6AYXhqcEFb5Cf/arqKDnfl7SKzHfp7git21qibkg+PelMsws/mN37UF3ceYEKvolfJTH+5LOUYUURSe4LhAPVwq66bZLn0r9Gcp+wAyJqWRx8k+uVJA5+/iOx3/vtGiI90V9oyf4gv4KWYhnvCiyrI0+zixB0+StD0QHBYa0DyzCsHtfLgss6JVtbf19qVmRtEmb1Kuc/3QmBPgasYR3e7RsaRAyEHLagaF9BZkMip3JJQ1UDy1x6lVECaC0f7tabfT170cMwGDbNsKUy6Kock6/iAEUWYGFJC5yQuObUiyNyiiCbFmBGfg+uMrvzZuyw6FV1EsdpfK2eTj4YoVaFE39ApZSeE5wbLlMTPf3gWKXY6z/IvYSILz50ckmfBep5PSXL/SRKcG0SRax7O7DFihv4=
+    - secure: CEutS31Oi0KFOxgLdGwjz30KZbzo2c+cOK7fLog5/jdNFb5qtRQDwAq853gf8RuH7lCbgGw4iV8FPe0PmrUP3RG1wfDxEXcAvDtSpiKOTUwmqWHOpZNnFtQb/1F/5d+xxNV33LYybaB3rxGAOMSp/SkDi5ysDkGg40Q/uUeGqPNSqViFEDjhsP8u1tYYZ32qQTCERlcp/RODHdUOx6qxQI13ttXeGyqxeHM7A1gThQQ9zxCxEk7VvmHyPslUEr0JDTxsMZlFRmFKOBiR0h569zBGm6SwRRmwFt9GtE+RUqwmgv8ZYWhMe128+pFpWr4mwGDfyS4Q5pZdLJU6uu7h3N9LdNgFfvpbvp49QgB1b1gPjeP49SR5QJh9yzPw8i3tIv/1RjXBa/7auXigYcbQagnIwGDvYS+8i3My4Egvghx+4u4J17NMuou3O1lXJWJua/7BYdjI967EaKiN/XqImKlDwX8FlnXtJ88WF3a6GJpi7VzIw2LSs/sP+MLm+xbLJICfsPg2c7sxMZrDJ6m8SiPYedATNTkCCn9kssfDv3+rSrp4g1qczpXVh7ySpMVIFbSrUu6UWpfyQ14rQACDp81Et9rSM+Pefw6O7HZGreS3yXBhbx9DPTCRaKr+EsSFrQbcdvv0+V0F50P0GnbsVT7SPIl1AMiyCGm5J52ruC4=

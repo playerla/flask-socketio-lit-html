@@ -12,14 +12,14 @@
 
 Webcomponents with Flask and SocketIO
 
-## Proof of concept project to use Webcoponents in Python Flask
+## Proof of concept project to use Webcomponents in Python Flask
 
 * Generate a restful API (inspired from Flask-Restful)
 * Update html on data changes through socketio (Inspired from Angular properties reflection)
 
 ## Usage philosophy
 
-Create user webcoponent from sqlalchemy design:
+Create user webcomponent from sqlalchemy design:
 ```python
 class User(db.Model):
     username = db.Column(db.String(80), nullable=False)
@@ -50,4 +50,4 @@ cd docs && sphinx-apidoc -o source/ ../flask_socketio_lit_html
 ```sh
 poetry build
 ```
-Just increment the version to publish after tests are succesfully passed
+Just increment the version in [pyproject.toml](./pyproject.toml) to publish after tests are succesfully passed (see [.travis.yml](./.travis.yml))

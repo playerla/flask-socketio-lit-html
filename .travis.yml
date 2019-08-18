@@ -5,6 +5,10 @@ python:
 install:
 - pip3 install -r pip.requirements poetry
 script: python3 -m pytest
+branches:
+  only:
+  - master
+  - Dev
 before_deploy:
   - git config --global user.email "builds@travis-ci.com"
   - git config --global user.name "Travis CI"

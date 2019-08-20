@@ -25,3 +25,8 @@ def test_post_user(client):
 
     user1_response = client.get('/user/1')
     assert b'user1@example.com' in user1_response.data
+
+def test_webcomponent(client):
+    webcomponent = client.get('/user')
+    with open('tests/user.js', 'w') as module:
+        module.write(webcomponent.data.decode("utf-8"))

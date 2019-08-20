@@ -13,14 +13,14 @@ before_deploy:
   - git config --global user.email "builds@travis-ci.com"
   - git config --global user.name "Travis CI"
   - export GIT_TAG=v$(sed -n 's/version.*"\(0[^"]*\)"/\1/p' pyproject.toml)
-  - git tag | grep $GIT_TAG || { git tag $GIT_TAG && export DEPLOY=true ;}
+  - git tag | grep $GIT_TAG && travis_terminate 0
+  - git tag $GIT_TAG
   - git push -q https://$publicrepotoken@github.com/playerla/flask-socketio-lit-html --tags
 deploy:
     provider: script
     script: poetry publish --build -u playerla -p $pypipassword
     on:
       branch: Dev
-      condition: "$DEPLOY = true"
 env:
   global:
     - secure: pudhNSiCuGJs0+I/SzroFcyvdr843DUt5owu9iUfvaFO9U7IhoZ80kMYCbnxPS3+6GftG1TjlTiJTIEHRP4ErEEyAmDDCLwOMaQ9uSkDS/LpqJe0Q46zDs7TXZG+AMiDQHojIaiqH32rMq6STsacISkyv7wexJFkRrN3V2KgkfMI1CUwpVVxdyZOv+YZb2YWYHOQPKV7vsXYVishC2D5fcsRsj+uOj0kn3UmMOT9V6Ysc1pTG9nBqMYvS8o6I5Jmo20R5Xza69ATmzjyJd6AYXhqcEFb5Cf/arqKDnfl7SKzHfp7git21qibkg+PelMsws/mN37UF3ceYEKvolfJTH+5LOUYUURSe4LhAPVwq66bZLn0r9Gcp+wAyJqWRx8k+uVJA5+/iOx3/vtGiI90V9oyf4gv4KWYhnvCiyrI0+zixB0+StD0QHBYa0DyzCsHtfLgss6JVtbf19qVmRtEmb1Kuc/3QmBPgasYR3e7RsaRAyEHLagaF9BZkMip3JJQ1UDy1x6lVECaC0f7tabfT170cMwGDbNsKUy6Kock6/iAEUWYGFJC5yQuObUiyNyiiCbFmBGfg+uMrvzZuyw6FV1EsdpfK2eTj4YoVaFE39ApZSeE5wbLlMTPf3gWKXY6z/IvYSILz50ckmfBep5PSXL/SRKcG0SRax7O7DFihv4=

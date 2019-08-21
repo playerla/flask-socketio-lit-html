@@ -64,6 +64,7 @@ class Item extends LitElement {
     }
     constructor() {
         super();
+        Object.defineProperty(this, 'shadowRoot', {value: document,});
         var element = this // Capturing element in the update callback
         io_socket.on("{{ ioupdate }}", function(index) {
             if (index == element.index)
@@ -77,6 +78,11 @@ class Item extends LitElement {
         {% endblock %}        
         `;
     }
+    createRenderRoot() {
+        // https://stackoverflow.com/a/53195662
+        // this is what overrides lit-element's behavior so that the contents don't render in shadow dom
+        return this;
+    };
     render() {
         return html`
         {% block render %}
@@ -97,6 +103,7 @@ class Items extends LitElement {
     }
     constructor() {
         super();
+        Object.defineProperty(this, 'shadowRoot', {value: document,});
         this.items = {};
         var items = this; // Capturing element in the update callback
         io_socket.on("{{ ioupdate }}", function(index_update) {
@@ -127,6 +134,11 @@ class Items extends LitElement {
         item.email = this.shadowRoot.getElementById('email').value;
         item.set();
     }
+    createRenderRoot() {
+        // https://stackoverflow.com/a/53195662
+        // this is what overrides lit-element's behavior so that the contents don't render in shadow dom
+        return this;
+    };
     render() {
         return html`
         <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" >
@@ -140,7 +152,7 @@ class Items extends LitElement {
                 <input type="email" class="form-control input-lg" id="email" aria-describedby="emailHelp" value="name@example.com">
                 <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
             </div>
-            <button class="btn btn-primary" @click="${ this.add_event }">Add</button>
+            <button id="submit-button" class="btn btn-primary" @click="${ this.add_event }">Add</button>
         </form>
         <ul>
         </ul>

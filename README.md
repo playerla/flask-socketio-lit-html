@@ -51,3 +51,10 @@ cd docs && sphinx-apidoc -o source/ ../flask_socketio_lit_html
 poetry build
 ```
 Just increment the version in [pyproject.toml](./pyproject.toml) to publish after tests are succesfully passed (see [.travis.yml](./.travis.yml))
+
+### Running browser tests
+```sh
+# Server must be running
+# python3 app.py &
+cd tests && yarn testcafe chrome .\webcomponent.test.js
+```

@@ -33,7 +33,7 @@ Display the second user of your database:
 <div> user 2: <user-item index=2 ></user-item></div>
 ```
 
-This code represent the idea behind the module, it's not real code, look at app.py for a working example.
+This code represent the idea behind the module, it's not real code, look at app.py for a working example. Project may be modeled on [wtforms-alchemy](https://github.com/kvesteri/wtforms-alchemy)
 
 ## Contribute : Pull requests are welcome !
 
@@ -54,7 +54,5 @@ Just increment the version in [pyproject.toml](./pyproject.toml) to publish afte
 
 ### Running browser tests
 ```sh
-# Server must be running
-# python3 app.py &
-cd tests && yarn testcafe chrome .\webcomponent.test.js
+cd tests ; yarn test
 ```

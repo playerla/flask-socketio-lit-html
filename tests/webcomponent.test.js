@@ -14,7 +14,7 @@ test('Second user', async t => {
     await t
         .typeText('#username', 'Will Bill')
         .click('#submit-button')
-        .expect(Selector('user-item').innerText).contains('Will Bill');
+        .expect(Selector('#user2').find('user-item').innerText).contains('Will Bill');
     const userInListText = await Selector('ul').find('user-item').innerText;
     console.log(userInListText);
     // await t.debug();

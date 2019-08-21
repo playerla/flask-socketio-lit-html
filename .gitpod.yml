@@ -1,5 +1,5 @@
 tasks:
-  - before: pip3 install -r pip.requirements -r docs/requirements.txt pytest
+  - before: pip3 install -r requirements.txt -r docs/requirements.txt pytest
     command: python3 app.py
 # Ports to expose on workspace startup (optional)
 ports:

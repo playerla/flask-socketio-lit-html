@@ -3,7 +3,7 @@ language: python
 python:
 - '3.7'
 install:
-- pip3 install -r pip.requirements poetry
+- pip3 install -r requirements.txt poetry
 script: python3 -m pytest
 branches:
   only:

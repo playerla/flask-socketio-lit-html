@@ -4,13 +4,16 @@ import tempfile
 
 import pytest
 
-from app import app
+import app
 
+app.app.config['DB_FILE'] = 'app_test.db'
 
 @pytest.fixture
 def client():
-    with app.test_client() as client:
+    app.app_init()
+    with app.app.test_client() as client:
         yield client
+    os.remove(app.app.config['DB_FILE'])
 
 def test_app_init(client):
     rv = client.get('/')

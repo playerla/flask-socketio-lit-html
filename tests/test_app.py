@@ -4,16 +4,14 @@ import tempfile
 
 import pytest
 
-import app
-
-app.app.config['DB_FILE'] = 'app_test.db'
+from app import WebcomponentApp, db
 
 @pytest.fixture
 def client():
-    app.app_init()
-    with app.app.test_client() as client:
+    app = WebcomponentApp(db, "app_test.db")
+    with app.test_client() as client:
         yield client
-    os.remove(app.app.config['DB_FILE'])
+    os.remove(app.config['DB_FILE'])
 
 def test_app_init(client):
     rv = client.get('/')

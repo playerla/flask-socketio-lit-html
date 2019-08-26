@@ -32,7 +32,9 @@ class Item extends LitElement {
     }
     _set(properties) {
         {% for property in properties %}
+        {% if property != 'index' %}
         this.{{ property }} = properties.{{ property }};
+        {% endif %}
         {% endfor %}
     };
     async newItem(properties) {
@@ -101,39 +103,23 @@ class Items extends LitElement {
             }
         }
     }
-    constructor() {
-        super();
-        Object.defineProperty(this, 'shadowRoot', {value: document,});
-        this.items = {};
-        var items = this; // Capturing element in the update callback
-        io_socket.on("{{ ioupdate }}", function(index_update) {
-            if (items.items[index_update] == undefined) {
-                items.items[index_update] = document.createElement('{{ component_name }}');
-                items.items[index_update].index = index_update;
-                var $li = document.createElement('li');
-                $li.appendChild(items.items[index_update])
-                items.$ul.appendChild($li);            
-            }
-        });
-    };
-    firstUpdated() {
-        this.$ul = this.shadowRoot.querySelector('ul');
-    }
     add_event() {
         var child = document.createElement('{{ component_name }}').newItem({
-                username: this.shadowRoot.getElementById('username').value, 
-                email: this.shadowRoot.getElementById('email').value
+                username: document.getElementById('username').value, 
+                email: document.getElementById('email').value
             })
             .then( (newItem) => {
                 console.log("item", newItem.index, 'has been created');
         });
     }
-    change_event() { 
-        var item = this.items[this.shadowRoot.getElementById('index').value];
-        item.username = this.shadowRoot.getElementById('username').value;
-        item.email = this.shadowRoot.getElementById('email').value;
+    change_event() {
+        index = document.getElementById('index').value;
+        // This will not work with shadow root unless user-item shadow root is accessible
+        var item = document.querySelectorAll('user-item[index="'+index+'"]')[0];
+        item.username = document.getElementById('username').value;
+        item.email = document.getElementById('email').value;
         item.set();
-    }
+    };
     createRenderRoot() {
         // https://stackoverflow.com/a/53195662
         // this is what overrides lit-element's behavior so that the contents don't render in shadow dom
@@ -150,14 +136,44 @@ class Items extends LitElement {
             <div class="form-group">
                 <label for="email">Email address</label>
                 <input type="email" class="form-control input-lg" id="email" aria-describedby="emailHelp" value="name@example.com">
-                <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
             </div>
             <button id="submit-button" class="btn btn-primary" @click="${ this.add_event }">Add</button>
         </form>
-        <ul>
-        </ul>
         <input id='index' value='2'>
         <mwc-button unelevated label="Change" @click="${ this.change_event }"></mwc-button>`;
     }
 }
-window.customElements.define('ul-{{ component_name }}', Items);
+window.customElements.define('form-{{ component_name }}', Items);
+
+
+class ItemsList extends LitElement {
+    static get properties() {
+        return {
+            items: { 
+                type: Array
+            }
+        }
+    }
+    constructor() {
+        super();
+        this.items = [];
+        get('{{ base_url }}'+'/all').then(indexes => this.items = indexes.items);
+        var items = this; // Capturing element in the update callback
+        io_socket.on("{{ ioupdate }}", function(index_update) {
+            if (!items.items.includes(index_update)) {
+                console.log("upadated item:", items.items, "+", index_update);
+                items.requestUpdate('items', [...items.items]);
+                items.items.push(index_update);
+                console.log("ioupdated:", items.items);
+            }
+        });
+    };
+    createRenderRoot() {
+        return this;
+    };
+    render() {
+        console.log("render:", this.items);
+        return html`<ul>${this.items.map((index) => html`<li><{{ component_name }} index=${index}></{{ component_name }}></li>`)}</ul>`;
+    }
+}
+window.customElements.define('ul-{{ component_name }}', ItemsList);

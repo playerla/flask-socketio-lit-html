@@ -25,14 +25,13 @@ def init_webcomponent(app, sqlAlchemydb, socket_io):
     Args:
         sqlAlchemydb (SQLAlchemy): Your database storing webcomponent state has to be
             instanciated with SQLAlchemy(app, model_class=IndexModel).
-        socket_io (SocketIO): The streaming object instance. engineio_logger
-            is set to True.
+        socket_io (SocketIO): The streaming object instance.
 
     """
     global socketio, db
     socketio = socket_io
     db = sqlAlchemydb
-    socketio.engineio_logger = True
+    app.config.setdefault('WEBCOMPONENT_LIGHT_DOM', 'false')
 
 
 # https://flask-sqlalchemy.palletsprojects.com/en/2.x/customizing/

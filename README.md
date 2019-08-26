@@ -56,3 +56,4 @@ Just increment the version in [pyproject.toml](./pyproject.toml) to publish afte
 ```sh
 cd tests ; yarn test
 ```
+Webcomponent's shadow root are disabled when running tests (to query components)

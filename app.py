@@ -11,13 +11,13 @@ class WebcomponentApp(Flask):
         """Our example app doesn't keep contents. Drop app.db"""
         super(WebcomponentApp, self).__init__(__name__)
         
-        # Database configuration
         self.config['DB_FILE'] = db_file
-        open(self.config['DB_FILE'], 'w').close()
+        self.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///'+self.config['DB_FILE']
+        # Database configuration
         self.db = db
         self.db.init_app(self)
-        self.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///'+self.config['DB_FILE']
         with self.app_context():
+            self.db.drop_all()
             self.db.create_all()
     
         # classic CSS theme 

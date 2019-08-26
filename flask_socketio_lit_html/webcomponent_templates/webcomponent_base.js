@@ -66,7 +66,9 @@ class Item extends LitElement {
     }
     constructor() {
         super();
+        {% if config.WEBCOMPONENT_LIGHT_DOM == true %}
         Object.defineProperty(this, 'shadowRoot', {value: document,});
+        {% endif %}
         var element = this // Capturing element in the update callback
         io_socket.on("{{ ioupdate }}", function(index) {
             if (index == element.index)
@@ -80,11 +82,14 @@ class Item extends LitElement {
         {% endblock %}        
         `;
     }
+    {% macro WEBCOMPONENT_LIGHT_DOM() %}
+    {% if config.WEBCOMPONENT_LIGHT_DOM == true %}
     createRenderRoot() {
-        // https://stackoverflow.com/a/53195662
-        // this is what overrides lit-element's behavior so that the contents don't render in shadow dom
         return this;
     };
+    {% endif %}
+    {% endmacro %}
+    {{ WEBCOMPONENT_LIGHT_DOM() }}
     render() {
         return html`
         {% block render %}
@@ -95,7 +100,7 @@ class Item extends LitElement {
 }    
 window.customElements.define('{{ component_name }}', Item);
 
-class Items extends LitElement {
+class ItemForm extends LitElement {
     static get properties() {
         return {
             items: { 
@@ -103,28 +108,30 @@ class Items extends LitElement {
             }
         }
     }
+    constructor() {
+        super();
+        {% if config.WEBCOMPONENT_LIGHT_DOM %}
+        Object.defineProperty(this, 'shadowRoot', {value: document,});
+        {% endif %}
+    };
     add_event() {
         var child = document.createElement('{{ component_name }}').newItem({
-                username: document.getElementById('username').value, 
-                email: document.getElementById('email').value
+                username: this.shadowRoot.getElementById('username').value, 
+                email: this.shadowRoot.getElementById('email').value
             })
             .then( (newItem) => {
                 console.log("item", newItem.index, 'has been created');
         });
     }
     change_event() {
-        index = document.getElementById('index').value;
+        var index = this.shadowRoot.getElementById('index').value;
         // This will not work with shadow root unless user-item shadow root is accessible
         var item = document.querySelectorAll('user-item[index="'+index+'"]')[0];
-        item.username = document.getElementById('username').value;
-        item.email = document.getElementById('email').value;
+        item.username = this.shadowRoot.getElementById('username').value;
+        item.email = this.shadowRoot.getElementById('email').value;
         item.set();
     };
-    createRenderRoot() {
-        // https://stackoverflow.com/a/53195662
-        // this is what overrides lit-element's behavior so that the contents don't render in shadow dom
-        return this;
-    };
+    {{ WEBCOMPONENT_LIGHT_DOM() }}
     render() {
         return html`
         <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" >
@@ -143,10 +150,10 @@ class Items extends LitElement {
         <mwc-button unelevated label="Change" @click="${ this.change_event }"></mwc-button>`;
     }
 }
-window.customElements.define('form-{{ component_name }}', Items);
+window.customElements.define('form-{{ component_name }}', ItemForm);
 
 
-class ItemsList extends LitElement {
+class ItemList extends LitElement {
     static get properties() {
         return {
             items: { 
@@ -161,19 +168,15 @@ class ItemsList extends LitElement {
         var items = this; // Capturing element in the update callback
         io_socket.on("{{ ioupdate }}", function(index_update) {
             if (!items.items.includes(index_update)) {
-                console.log("upadated item:", items.items, "+", index_update);
                 items.requestUpdate('items', [...items.items]);
                 items.items.push(index_update);
-                console.log("ioupdated:", items.items);
             }
         });
     };
-    createRenderRoot() {
-        return this;
-    };
+    {{ WEBCOMPONENT_LIGHT_DOM() }}
     render() {
         console.log("render:", this.items);
         return html`<ul>${this.items.map((index) => html`<li><{{ component_name }} index=${index}></{{ component_name }}></li>`)}</ul>`;
     }
 }
-window.customElements.define('ul-{{ component_name }}', ItemsList);
+window.customElements.define('ul-{{ component_name }}', ItemList);

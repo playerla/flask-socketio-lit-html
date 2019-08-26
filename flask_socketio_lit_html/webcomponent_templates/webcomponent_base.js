@@ -110,7 +110,7 @@ class ItemForm extends LitElement {
     }
     constructor() {
         super();
-        {% if config.WEBCOMPONENT_LIGHT_DOM %}
+        {% if config.WEBCOMPONENT_LIGHT_DOM == true %}
         Object.defineProperty(this, 'shadowRoot', {value: document,});
         {% endif %}
     };
@@ -125,7 +125,7 @@ class ItemForm extends LitElement {
     }
     change_event() {
         var index = this.shadowRoot.getElementById('index').value;
-        // This will not work with shadow root unless user-item shadow root is accessible
+        // This will not work with shadow root unless selected user-item is accessible
         var item = document.querySelectorAll('user-item[index="'+index+'"]')[0];
         item.username = this.shadowRoot.getElementById('username').value;
         item.email = this.shadowRoot.getElementById('email').value;

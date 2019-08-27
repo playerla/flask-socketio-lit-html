@@ -101,13 +101,6 @@ class Item extends LitElement {
 window.customElements.define('{{ component_name }}', Item);
 
 class ItemForm extends LitElement {
-    static get properties() {
-        return {
-            items: { 
-                type: Object
-            }
-        }
-    }
     constructor() {
         super();
         {% if config.WEBCOMPONENT_LIGHT_DOM == true %}

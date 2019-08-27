@@ -100,13 +100,7 @@ class Item extends LitElement {
 }    
 window.customElements.define('{{ component_name }}', Item);
 
-class ItemForm extends LitElement {
-    constructor() {
-        super();
-        {% if config.WEBCOMPONENT_LIGHT_DOM == true %}
-        Object.defineProperty(this, 'shadowRoot', {value: document,});
-        {% endif %}
-    };
+class ItemForm extends Item {
     add_event() {
         var child = document.createElement('{{ component_name }}').newItem({
                 username: this.shadowRoot.getElementById('username').value, 
@@ -117,25 +111,22 @@ class ItemForm extends LitElement {
         });
     }
     change_event() {
-        var index = this.shadowRoot.getElementById('index').value;
-        // This will not work with shadow root unless selected user-item is accessible
-        var item = document.querySelectorAll('user-item[index="'+index+'"]')[0];
-        item.username = this.shadowRoot.getElementById('username').value;
-        item.email = this.shadowRoot.getElementById('email').value;
-        item.set();
+        this.index = this.shadowRoot.getElementById('index').value;
+        this.username = this.shadowRoot.getElementById('username').value;
+        this.email = this.shadowRoot.getElementById('email').value;
+        this.set();
     };
-    {{ WEBCOMPONENT_LIGHT_DOM() }}
     render() {
         return html`
         <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" >
         <form onsubmit="return false;">
             <div class="form-group">
                 <label for="username">Name</label>
-                <input type="text" class="form-control input-lg" id="username" value="Name">
+                <input type="text" class="form-control input-lg" id="username" value="${this.username}">
             </div>
             <div class="form-group">
                 <label for="email">Email address</label>
-                <input type="email" class="form-control input-lg" id="email" aria-describedby="emailHelp" value="name@example.com">
+                <input type="email" class="form-control input-lg" id="email" aria-describedby="emailHelp" value="${this.email}">
             </div>
             <button id="submit-button" class="btn btn-primary" @click="${ this.add_event }">Add</button>
         </form>

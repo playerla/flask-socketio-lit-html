@@ -39,7 +39,6 @@ class Item extends LitElement {
     };
     async newItem(properties) {
         await post('{{ base_url }}', properties).then(json => this.index = json.index);
-        console.log('new', this.index);
         return this;
     };
     set() {
@@ -51,10 +50,8 @@ class Item extends LitElement {
     }
     _get() { 
         get('{{ base_url }}'+'/'+this.index).then(item => {
-            if(item) {
+            if(item)
                 this._set(item);
-                console.log(this.index, 'loaded:', item)
-            }
             else
                 console.log("undefined item ", this.index);
     })}
@@ -94,6 +91,7 @@ class Item extends LitElement {
         return html`
         {% block render %}
         Your item <strong> ${ this.index } </strong> rendered here
+        You must define webcomponent_base's block 'render'
         {% endblock %}
         `;
     };
@@ -103,35 +101,34 @@ window.customElements.define('{{ component_name }}', Item);
 class ItemForm extends Item {
     add_event() {
         var child = document.createElement('{{ component_name }}').newItem({
-                username: this.shadowRoot.getElementById('username').value, 
-                email: this.shadowRoot.getElementById('email').value
+            {% for property in properties %}
+            {% if property != 'index' %}
+                {{ property }}: this.shadowRoot.getElementById('{{ property }}').value, 
+            {% endif %}
+            {% endfor %}
             })
             .then( (newItem) => {
                 console.log("item", newItem.index, 'has been created');
         });
     }
     change_event() {
-        this.index = this.shadowRoot.getElementById('index').value;
-        this.username = this.shadowRoot.getElementById('username').value;
-        this.email = this.shadowRoot.getElementById('email').value;
+        {% for property in properties %}
+        this.{{ property }} = this.shadowRoot.getElementById('{{ property }}').value, 
+        {% endfor %}
         this.set();
     };
     render() {
         return html`
-        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" >
+        {% block form %}
         <form onsubmit="return false;">
-            <div class="form-group">
-                <label for="username">Name</label>
-                <input type="text" class="form-control input-lg" id="username" value="${this.username}">
-            </div>
-            <div class="form-group">
-                <label for="email">Email address</label>
-                <input type="email" class="form-control input-lg" id="email" aria-describedby="emailHelp" value="${this.email}">
-            </div>
-            <button id="submit-button" class="btn btn-primary" @click="${ this.add_event }">Add</button>
+            <input type="text" id="yourProperty" value="propertyValue">
+            <button @click="${ this.add_event }">Add</button>
+            <input id='index' value='2'>
+            <button @click="${ this.change_event }">Change</button>
         </form>
-        <input id='index' value='2'>
-        <mwc-button unelevated label="Change" @click="${ this.change_event }"></mwc-button>`;
+        You must define webcomponent_base's block 'form'
+        {% endblock %}
+        `;
     }
 }
 window.customElements.define('form-{{ component_name }}', ItemForm);
@@ -159,7 +156,6 @@ class ItemList extends LitElement {
     };
     {{ WEBCOMPONENT_LIGHT_DOM() }}
     render() {
-        console.log("render:", this.items);
         return html`<ul>${this.items.map((index) => html`<li><{{ component_name }} index=${index}></{{ component_name }}></li>`)}</ul>`;
     }
 }

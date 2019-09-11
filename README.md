@@ -39,6 +39,8 @@ This code represent the idea behind the module, it's not real code, look at app.
 
 [![Edit with Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/playerla/flask-socketio-lit-html/tree/Dev)
 
+[![Slack Status](https://img.shields.io/badge/slack-join-green?style=for-the-badge)](https://join.slack.com/t/flasksocketio-vhj9931/shared_invite/enQtNzUwMDgzMDg5ODU3LWRhNDg4MmNmMTg2MDYwM2UxYjQ5ZDhkN2FmODY2MGI0NDU3YWNmNTdlOWZkM2YzZmZlMjdmYjNmY2JiZThhOGI)
+
 ### Updating autodoc
 
 ```sh

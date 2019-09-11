@@ -2,11 +2,11 @@
 [![ForTheBadge uses-badges](https://img.shields.io/badge/uses-lit%20html-4ab?style=for-the-badge&labelColor=4cd)](https://lit-html.polymer-project.org/)
 [![ForTheBadge uses-badges](https://img.shields.io/badge/uses-Socket.IO-4ab?style=for-the-badge&labelColor=4cd)](https://socket.io/)
 
-![Version: Alpha](https://img.shields.io/badge/version-alpha-yellow?style=for-the-badge)
+[![Version: Alpha](https://img.shields.io/badge/version-alpha-yellow?style=for-the-badge)](.)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
 [![Pypi version](https://img.shields.io/pypi/v/flask-socketio-lit-html?style=for-the-badge)](.)
 [![ReadTheDocs](https://readthedocs.org/projects/flask-socketio-lit-html/badge/?version=latest&style=for-the-badge)](https://flask-socketio-lit-html.readthedocs.io/)
-![Travis (.org)](https://img.shields.io/travis/playerla/flask-socketio-lit-html?style=for-the-badge)
+[![Travis (.org)](https://img.shields.io/travis/playerla/flask-socketio-lit-html?style=for-the-badge)](https://travis-ci.org/playerla/flask-socketio-lit-html)
 
 # Flask-Socket.IO-lit-html
 

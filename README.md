@@ -7,6 +7,7 @@
 [![Pypi version](https://img.shields.io/pypi/v/flask-socketio-lit-html?style=for-the-badge)](.)
 [![ReadTheDocs](https://readthedocs.org/projects/flask-socketio-lit-html/badge/?version=latest&style=for-the-badge)](https://flask-socketio-lit-html.readthedocs.io/)
 [![Travis (.org)](https://img.shields.io/travis/playerla/flask-socketio-lit-html?style=for-the-badge)](https://travis-ci.org/playerla/flask-socketio-lit-html)
+[![codecov](https://img.shields.io/codecov/c/github/playerla/flask-socketio-lit-html?style=for-the-badge)](https://codecov.io/gh/playerla/flask-socketio-lit-html)
 
 # Flask-Socket.IO-lit-html
 

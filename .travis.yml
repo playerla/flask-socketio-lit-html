@@ -3,7 +3,7 @@ language: python
 python:
 - '3.7'
 install:
-- pip3 install -r requirements.txt poetry
+- pip3 install -r requirements.txt poetry codecov pytest-cov
 addons:
   apt:
     sources:
@@ -12,7 +12,7 @@ addons:
      - google-chrome-stable
 services:
 - xvfb
-script: python3 -m pytest ; cd tests ; yarn ; yarn test
+script: python3 -m pytest --cov=./ ; cd tests ; yarn ; yarn test ; codecov
 branches:
   only:
   - master

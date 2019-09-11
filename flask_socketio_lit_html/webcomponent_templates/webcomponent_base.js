@@ -1,4 +1,3 @@
-import 'https://unpkg.com/@material/mwc-button@0.6.0/mwc-button.js?module';
 import { LitElement, html, css } from 'https://unpkg.com/lit-element?module';
 
 var io_socket = io()

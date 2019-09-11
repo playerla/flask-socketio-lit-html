@@ -12,7 +12,7 @@ addons:
      - google-chrome-stable
 services:
 - xvfb
-script: python3 -m pytest --cov=./ ; cd tests ; yarn ; yarn test ; cd .. ; codecov
+script: python3 -m pytest --cov=./ && codecov ; cd tests ; yarn ; yarn test
 branches:
   only:
   - master

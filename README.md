@@ -40,7 +40,9 @@ This code represent the idea behind the module, it's not real code, look at app.
 
 [![Edit with Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/playerla/flask-socketio-lit-html/tree/Dev)
 
-[![Slack Status](https://img.shields.io/badge/slack-join-green?style=for-the-badge)](https://join.slack.com/t/flasksocketio-vhj9931/shared_invite/enQtNzUwMDgzMDg5ODU3LWRhNDg4MmNmMTg2MDYwM2UxYjQ5ZDhkN2FmODY2MGI0NDU3YWNmNTdlOWZkM2YzZmZlMjdmYjNmY2JiZThhOGI)
+[![Slack Status](https://img.shields.io/badge/slack-join-darkblue?style=for-the-badge)](https://join.slack.com/t/flasksocketio-vhj9931/shared_invite/enQtNzUwMDgzMDg5ODU3LWRhNDg4MmNmMTg2MDYwM2UxYjQ5ZDhkN2FmODY2MGI0NDU3YWNmNTdlOWZkM2YzZmZlMjdmYjNmY2JiZThhOGI)
+
+[![Join the community on Spectrum](https://img.shields.io/badge/Spectrum-join-purple?style=for-the-badge)](https://spectrum.chat/flask-sio-lit-html/)
 
 ### Updating autodoc
 

@@ -5,7 +5,6 @@ tasks:
 ports:
   - port: 5000
     onOpen: open-preview
-
 vscode:
   extensions:
-    - lextudio.restructuredtext@113.0.0:NItDcB4gcfFOXK3wya9qrw==
+    - lextudio.restructuredtext@114.0.0:4dtlRPci2YmH+jvn0HAgPg==

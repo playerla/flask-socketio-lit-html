@@ -19,3 +19,10 @@ test('Second user', async t => {
     console.log(userInListText);
     // await t.debug();
 });
+
+test('Change second user', async t => {
+    await t
+        .typeText('#username', 'new name')
+        .click('#change-button')
+        .expect(Selector('#user2').find('user-item').innerText).contains('new name');
+});

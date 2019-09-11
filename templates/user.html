@@ -24,7 +24,7 @@ strong {
         <input type="email" class="form-control input-lg" id="email" aria-describedby="emailHelp" value="${this.email}">
     </div>
     <button id="submit-button" class="btn btn-primary" @click="${ this.add_event }">Add</button>
+    <input id='index' value='2'>
+    <button id="change-button" class="btn btn-primary" @click="${ this.change_event }">Change</button>
 </form>
-<input id='index' value='2'>
-<button id="submit-button" class="btn btn-primary" @click="${ this.change_event }">Change</button>
 {% endblock %}

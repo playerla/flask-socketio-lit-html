@@ -1,5 +1,8 @@
 .. _web_component_base_js:
 
+This module requires the SocketIO library to be loaded
+:code:`<script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>`
+
 Webcomponent\_base JS module
 =========================
 
@@ -25,12 +28,12 @@ Webcomponent\_base JS module
 
 Example usage:
 
-`item` is your component name
+`example-item` is your component name. "Custom element names require a dash to be used in them; they can't be single words." (mozilla.org)
 
 .. code-block:: html
    :linenos:
 
-   <item index=2></item>
+   <example-item index=2></example-item>
 
 
 
@@ -51,7 +54,7 @@ Example usage:
 .. code-block:: html
    :linenos:
 
-   <item-form></item-form>
+   <form-example-item></form-example-item>
 
 
 
@@ -71,4 +74,4 @@ Example usage:
 .. code-block:: html
    :linenos:
 
-   <ul-item></ul-item>
+   <ul-example-item></ul-example-item>

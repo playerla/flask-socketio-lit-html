@@ -25,7 +25,7 @@ Generate a Rest API
 ----------------------
 Register the component blueprint which contains the next JSON endpoints:
 
-- GET  `/componentname` : The component implementation - a static javascript module
+- GET  `/componentname` : The component implementation - a static javascript module. You can get it via url_for('componentname.webcomponent')
 - GET  `/componentname/<int:index>` : The component with the primary key `index`
 - GET  `/componentname/all` : The list of all components indexes in database
 - POST `/componentname` : The JSON new user or the user to modify if `index` key is set

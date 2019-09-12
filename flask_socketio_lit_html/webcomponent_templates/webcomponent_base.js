@@ -2,13 +2,13 @@ import { LitElement, html, css } from 'https://unpkg.com/lit-element?module';
 
 var io_socket = io()
 
-const get = async (url) => { 
+const get = async (url) => {
     const response = await fetch(url);
     if (response.status == 404)
         return null;
     return await response.json();
 }
-const post = async (url, json) => { 
+const post = async (url, json) => {
     const response = await fetch(url, {
         method: 'POST',
         headers: new Headers({ "content-type": "application/json" }),
@@ -47,7 +47,7 @@ class Item extends LitElement {
         {% endfor %}
         })
     }
-    _get() { 
+    _get() {
         get('{{ base_url }}'+'/'+this.index).then(item => {
             if(item)
                 this._set(item);
@@ -75,7 +75,7 @@ class Item extends LitElement {
     static get styles() {
         return css`
         {% block style %}
-        {% endblock %}        
+        {% endblock %}
         `;
     }
     {% macro WEBCOMPONENT_LIGHT_DOM() %}
@@ -94,7 +94,7 @@ class Item extends LitElement {
         {% endblock %}
         `;
     };
-}    
+}
 window.customElements.define('{{ component_name }}', Item);
 
 class ItemForm extends Item {
@@ -102,7 +102,7 @@ class ItemForm extends Item {
         var child = document.createElement('{{ component_name }}').newItem({
             {% for property in properties %}
             {% if property != 'index' %}
-                {{ property }}: this.shadowRoot.getElementById('{{ property }}').value, 
+                {{ property }}: this.shadowRoot.getElementById('{{ property }}').value,
             {% endif %}
             {% endfor %}
             })
@@ -112,7 +112,7 @@ class ItemForm extends Item {
     }
     change_event() {
         {% for property in properties %}
-        this.{{ property }} = this.shadowRoot.getElementById('{{ property }}').value, 
+        this.{{ property }} = this.shadowRoot.getElementById('{{ property }}').value,
         {% endfor %}
         this.set();
     };
@@ -136,7 +136,7 @@ window.customElements.define('form-{{ component_name }}', ItemForm);
 class ItemList extends LitElement {
     static get properties() {
         return {
-            items: { 
+            items: {
                 type: Array
             }
         }
@@ -153,6 +153,15 @@ class ItemList extends LitElement {
             }
         });
     };
+    static get styles() {
+        return css`
+        {% block list_style %}
+        li {
+            list-style: none;
+        }
+        {% endblock %}
+        `;
+    }
     {{ WEBCOMPONENT_LIGHT_DOM() }}
     render() {
         return html`<ul>${this.items.map((index) => html`<li><{{ component_name }} index=${index}></{{ component_name }}></li>`)}</ul>`;

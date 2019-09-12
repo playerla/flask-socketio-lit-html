@@ -8,15 +8,13 @@
         in html template: <user-item index=1></user-item>
 """
 from flask import render_template, request, jsonify, Blueprint
-from flask_sqlalchemy import Model
+from flask_sqlalchemy import SQLAlchemy, Model
 import sqlalchemy as sa
 from sqlalchemy.ext.declarative import declared_attr
-
-socketio = None
-db = None
+from flask_socketio import SocketIO
 
 
-def init_webcomponent(app, sqlAlchemydb, socket_io):
+def init_webcomponent(app, sqlAlchemydb, socket_io=None):
     """Init webcomponent with external dependancies
 
     db store object state and socketio allows efficient
@@ -29,8 +27,8 @@ def init_webcomponent(app, sqlAlchemydb, socket_io):
 
     """
     global socketio, db
-    socketio = socket_io
-    db = sqlAlchemydb
+    socketio = socket_io or socketio or SocketIO(app)
+    db = sqlAlchemydb or db
     app.config.setdefault('WEBCOMPONENT_LIGHT_DOM', 'false')
 
 
@@ -40,7 +38,7 @@ class IndexModel(Model):
     __abstract__ = True
 
     @classmethod
-    def register(cls, base_url, component_name, template='webcomponent_base.js'):
+    def register(cls, base_url, component_name, template='webcomponent_base.js', app=None):
         """ Register webcomponent to api endpoint"""
         blueprint = Blueprint(component_name, __name__,
                               template_folder='webcomponent_templates')
@@ -59,6 +57,14 @@ class IndexModel(Model):
                                defaults={'cls': cls}, methods=['POST'])
         blueprint.add_url_rule(base_url+'/all', view_func=IndexModel.get_all,
                                defaults={'cls': cls})
+        if app:
+            db.init_app(app)
+            with app.app_context():
+                db.create_all()
+            app.register_blueprint(blueprint)
+            global socketio
+            if socketio is None:
+                socketio = SocketIO(app)
         return blueprint
 
     @declared_attr
@@ -95,3 +101,10 @@ class IndexModel(Model):
     def get_all(cls):
         """Return all index as `{'items': [list of indexes]}`"""
         return {'items': db.session.query(cls.index).all()}
+
+def get_socketio():
+    global socketio
+    return socketio
+
+socketio = None
+db = SQLAlchemy(model_class=IndexModel)

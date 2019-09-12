@@ -12,7 +12,7 @@
 
 # Flask-Socket.IO-lit-html
 
-Webcomponents with Flask and SocketIO
+Webcomponents with Flask and SocketIO [Quick Start on documentation](https://flask-socketio-lit-html.readthedocs.io/introduction.html#introduction)
 
 ## Proof of concept project to use Webcomponents in Python Flask
 

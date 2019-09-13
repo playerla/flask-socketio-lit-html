@@ -6,3 +6,4 @@ exclude_lines =
 omit =
     tests/*
     run_test_app.py
+    todoapp.py

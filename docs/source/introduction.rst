@@ -11,6 +11,7 @@ Example: Todo App
 ===================================================
 
 Define the todo component in jinja html template
+
 .. code-block:: jinja
 
     {% extends "webcomponent_base.js" %}
@@ -39,9 +40,9 @@ Create  Flask application, register your component and run it
 
     class TodoApp(Flask):
         def __init__(self):
+        """Register component with its template view and give an url for the API endpoint"""
             super(TodoApp, self).__init__(__name__)
             Todo.register("/todo", "todo-item", "todo.html", app=self)
-            # TodoApp main page
             self.add_url_rule('/', "TodoApp", lambda : render_template('todoapp.html'))
             self.appIO = get_socketio()
 

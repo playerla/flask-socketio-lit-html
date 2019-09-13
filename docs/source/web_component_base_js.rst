@@ -1,11 +1,10 @@
 .. _web_component_base_js:
 
+Webcomponent\_base JS module
+============================
+
 This module requires the SocketIO library to be loaded
 :code:`<script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>`
-
-Webcomponent\_base JS module
-=========================
-
 
 .. class:: Item
 

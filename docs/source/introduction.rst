@@ -7,9 +7,50 @@ Quick Start
 
     pip install flask-socketio-lit-html
 
-Example: User
+Example: Todo App
 ===================================================
-Basic example is a User component.
+
+Define the todo component in jinja html template
+.. code-block:: jinja
+
+    {% extends "webcomponent_base.js" %}
+
+
+    {% block render %}
+    <input type="checkbox">${ this.todo }
+    {% endblock %}
+
+
+    {% block form %}
+    <form onsubmit="return false;">
+        <input type="text" id="todo" value="task">
+        <button id="submit-button" @click="${ this.add_event }">Add</button>
+    </form>
+    {% endblock %}
+
+
+Create  Flask application, register your component and run it
+
+.. code-block:: python
+
+    class Todo(db.Model):
+        """Todo webcomponent model"""
+        todo = db.Column(db.String(80))
+
+    class TodoApp(Flask):
+        def __init__(self):
+            super(TodoApp, self).__init__(__name__)
+            Todo.register("/todo", "todo-item", "todo.html", app=self)
+            # TodoApp main page
+            self.add_url_rule('/', "TodoApp", lambda : render_template('todoapp.html'))
+            self.appIO = get_socketio()
+
+    def runApp(self):
+        self.appIO.run(self)
+
+    TodoApp().runApp()
+
+See https://github.com/playerla/flask-socketio-lit-html/tree/Dev/tests/todo_app/
 
 How it works
 ===================================================
@@ -40,5 +81,5 @@ The webcomponent inherit from lit-element, business methods have to be overwritt
 
 Update html on server side data changes
 ---------------------------------------
-A socketio message is send by the server to the component JS module after a POST request completes. It contains the new or updated index. Its name is
-cls+'update' where cls is your python component class. For example it could be `Userupdate`. Then the component updates itself.
+A socketio message is sent by the server to the component JS module after a POST request completes. Something like `<class '__main__.User'>update`: name is
+cls+'update' where cls is your python component class. The message is the new or updated index, then the component updates itself with a GET call.

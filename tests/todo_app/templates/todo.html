@@ -1,0 +1,14 @@
+{% extends "webcomponent_base.js" %}
+
+
+{% block render %}
+<input type="checkbox">${ this.todo }
+{% endblock %}
+
+
+{% block form %}
+<form onsubmit="return false;">
+    <input type="text" id="todo" value="task">
+    <button id="submit-button" @click="${ this.add_event }">Add</button>
+</form>
+{% endblock %}

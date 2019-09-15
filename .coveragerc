@@ -1,0 +1,9 @@
+[run]
+source = flask_socketio_lit_html
+[report]
+exclude_lines =
+    raise NotImplementedError
+omit =
+    tests/*
+    run_test_app.py
+    todoapp.py

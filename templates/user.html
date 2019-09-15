@@ -1,9 +1,30 @@
 {% extends "webcomponent_base.js" %}
+
+
 {% block render %}
 <strong>${ this.username }</strong> ${ this.email }
 {% endblock %}
+
+
 {% block style %}
 strong {
     color: blue;
 }
+{% endblock %}
+
+{% block form %}
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" >
+<form onsubmit="return false;">
+    <div class="form-group">
+        <label for="username">Name</label>
+        <input type="text" class="form-control input-lg" id="username" value="${this.username}">
+    </div>
+    <div class="form-group">
+        <label for="email">Email address</label>
+        <input type="email" class="form-control input-lg" id="email" aria-describedby="emailHelp" value="${this.email}">
+    </div>
+    <button id="submit-button" class="btn btn-primary" @click="${ this.add_event }">Add</button>
+    <input id='index' value='2'>
+    <button id="change-button" class="btn btn-primary" @click="${ this.change_event }">Change</button>
+</form>
 {% endblock %}

@@ -1,0 +1,10 @@
+tasks:
+  - before: pip3 install -r requirements.txt -r docs/requirements.txt pytest ; cd docs && make html ; cd ..
+    command: python3 app.py
+# Ports to expose on workspace startup (optional)
+ports:
+  - port: 5000
+    onOpen: open-preview
+vscode:
+  extensions:
+    - lextudio.restructuredtext@114.0.0:4dtlRPci2YmH+jvn0HAgPg==

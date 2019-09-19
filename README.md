@@ -27,7 +27,7 @@ Create user webcomponent from sqlalchemy design. GET and POST API on `/user`.
 class User(db.Model):
     username = db.Column(db.String(80), nullable=False)
 
-blueprint = User.register("/user", "user-item", "user.html")
+blueprint = User.configure_blueprint("/user", "user-item", "user.html")
 app.register_blueprint(blueprint)
 ```
 Define the webcomponent view in a jinja template
@@ -55,10 +55,10 @@ This code represent the idea behind the module, look at app.py for a working exa
 cd docs && sphinx-apidoc -o source/ ../flask_socketio_lit_html
 ```
 
-### Build package
+### Build and test package
 
 ```sh
-poetry build
+poetry build && pip3 install dist/flask_socketio_lit_html-0.1.1rc1-py3-none-any.whl --force-reinstall
 ```
 
 ### Running browser tests

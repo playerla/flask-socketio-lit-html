@@ -7,11 +7,28 @@
         >>> # ... Flask app and extensions setup ...
         in html template: <user-item index=1></user-item>
 """
-from flask import render_template, request, jsonify, Blueprint
+from flask import render_template, request, jsonify, Blueprint, Flask
 from flask_sqlalchemy import SQLAlchemy, Model
 import sqlalchemy as sa
 from sqlalchemy.ext.declarative import declared_attr
 from flask_socketio import SocketIO
+
+
+class FlaskWelApp(Flask):
+    def __init__(self, __name__):
+        super(FlaskWelApp, self).__init__(__name__)
+        self.appIO = get_socketio()
+        # Default to In-memory database in register
+        db.init_app(self)
+        with self.app_context():
+            db.create_all()
+        global socketio
+        if socketio is None:
+            socketio = SocketIO(self)
+        self.appIO = socketio
+
+    def runApp(self):
+        self.appIO.run(self)
 
 
 def init_webcomponent(app, sqlAlchemydb, socket_io=None):
@@ -38,8 +55,26 @@ class IndexModel(Model):
     __abstract__ = True
 
     @classmethod
-    def register(cls, base_url, component_name, template='webcomponent_base.js', app=None):
-        """ Register webcomponent to api endpoint"""
+    def configure_blueprint(cls, base_url=None, component_name=None, template=None):
+        """ Configure element
+
+        Configure the element with convenient default values.
+
+        Args:
+            base_url (String): API endpoint for the component. Default to /classname
+            component_name (String): the registered html tag name. Default to classname (lowercase)
+            template (String): Template name for the webcomponents. Default to classname.html
+
+        Returns blueprint for flask
+
+        """
+        element_name = cls.__name__
+        if base_url is None:
+            base_url = '/'+element_name
+        if component_name is None:
+            component_name = element_name.lower()+'-item'
+        if template is None:
+            template = element_name+'.html'
         blueprint = Blueprint(component_name, __name__,
                               template_folder='webcomponent_templates')
         blueprint.add_url_rule(base_url, view_func=IndexModel.webcomponent,
@@ -57,14 +92,6 @@ class IndexModel(Model):
                                defaults={'cls': cls}, methods=['POST'])
         blueprint.add_url_rule(base_url+'/all', view_func=IndexModel.get_all,
                                defaults={'cls': cls})
-        if app:
-            db.init_app(app)
-            with app.app_context():
-                db.create_all()
-            app.register_blueprint(blueprint)
-            global socketio
-            if socketio is None:
-                socketio = SocketIO(app)
         return blueprint
 
     @declared_attr

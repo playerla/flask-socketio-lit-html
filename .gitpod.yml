@@ -8,3 +8,6 @@ ports:
 vscode:
   extensions:
     - lextudio.restructuredtext@114.0.0:4dtlRPci2YmH+jvn0HAgPg==
+github:
+  prebuilds:
+    addComment: true

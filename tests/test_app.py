@@ -5,6 +5,18 @@ import tempfile
 import pytest
 
 from app import WebcomponentApp, db
+from flask_socketio_lit_html.webcomponent_base import FlaskWelApp
+from flask_socketio_lit_html.webcomponent_base import db as default_db
+
+# Default App
+class Model(default_db.Model):
+    """Todo webcomponent model"""
+
+class App(FlaskWelApp):
+    def __init__(self):
+        super(App, self).__init__(__name__)
+        self.register_blueprint(Model.configure_blueprint())
+        self.add_url_rule('/', view_func=lambda : "App loaded")
 
 @pytest.fixture
 def client():
@@ -12,6 +24,16 @@ def client():
     with app.test_client() as client:
         yield client
     os.remove(app.config['DB_FILE'])
+
+@pytest.fixture
+def default_client():
+    app = App()
+    with app.test_client() as client:
+        yield client
+
+def test_app_init_default_client(default_client):
+    rv = default_client.get('/')
+    assert b'App loaded' in rv.data
 
 def test_app_init(client):
     rv = client.get('/')

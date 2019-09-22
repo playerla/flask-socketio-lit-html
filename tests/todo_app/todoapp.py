@@ -1,4 +1,4 @@
-from flask_socketio_lit_html.webcomponent_base import FlaskWelApp, init_webcomponent, db, get_socketio
+from flask_socketio_lit_html.webcomponent_base import FlaskWelApp, db
 from flask import render_template
 
 

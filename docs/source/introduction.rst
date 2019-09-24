@@ -48,7 +48,15 @@ Create  Flask application, configure your element and run it
 
     TodoApp().runApp()
 
-See https://github.com/playerla/flask-socketio-lit-html/tree/Dev/tests/todo_app/
+Keep control of your dependencies
+
+.. code-block:: jinja
+
+    <script src="{{url_for('todo-item.static', filename='socketio-2.3.0.js')}}"></script>
+    <script src="{{url_for('todo-item.static', filename='element.js')}}"></script>
+    <script type="module" src="{{url_for('todo-item.webcomponent')}}"></script>
+
+See full example at https://github.com/playerla/flask-socketio-lit-html/tree/Dev/tests/todo_app/
 
 How it works
 ===================================================

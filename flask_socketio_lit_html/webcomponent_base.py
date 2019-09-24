@@ -76,7 +76,8 @@ class IndexModel(Model):
         if template is None:
             template = element_name+'.html'
         blueprint = Blueprint(component_name, __name__,
-                              template_folder='webcomponent_templates')
+                              template_folder='webcomponent_templates',
+                              static_folder='webcomponents_static')
         blueprint.add_url_rule(base_url, view_func=IndexModel.webcomponent,
                                defaults={
                                    # Variable for the webcomponent_base.js

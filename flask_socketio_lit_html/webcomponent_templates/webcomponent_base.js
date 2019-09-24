@@ -1,4 +1,4 @@
-import { LitElement, html, css } from 'https://unpkg.com/lit-element?module';
+//import { LitElement, html, css } from './lit-element';
 
 var io_socket = io()
 

@@ -67,6 +67,10 @@ cd tests ; yarn test
 ```
 Webcomponent's shadow root are disabled when running testcafe (for selecting components)
 
+## Build lit-element with rollup.js
+```sh
+cd flask_socketio_lit_html/dependencies/ && yarn && yarn build && cd ../..
+```
 ### Any questions ?
 
 [![Slack Status](https://img.shields.io/badge/slack-join-darkblue?style=for-the-badge)](https://join.slack.com/t/flasksocketio-vhj9931/shared_invite/enQtNzUwMDgzMDg5ODU3LWRhNDg4MmNmMTg2MDYwM2UxYjQ5ZDhkN2FmODY2MGI0NDU3YWNmNTdlOWZkM2YzZmZlMjdmYjNmY2JiZThhOGI)

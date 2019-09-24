@@ -4,7 +4,7 @@
 
 [![Version: Alpha](https://img.shields.io/badge/version-alpha-yellow?style=for-the-badge)](.)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
-[![Pypi version](https://img.shields.io/pypi/v/flask-socketio-lit-html?style=for-the-badge)](.)
+[![Pypi version](https://img.shields.io/pypi/v/flask-socketio-lit-html?style=for-the-badge)](https://pypi.org/project/flask-socketio-lit-html/)
 [![ReadTheDocs](https://readthedocs.org/projects/flask-socketio-lit-html/badge/?version=latest&style=for-the-badge)](https://flask-socketio-lit-html.readthedocs.io/)
 [![Travis (.org)](https://img.shields.io/travis/playerla/flask-socketio-lit-html?style=for-the-badge)](https://travis-ci.org/playerla/flask-socketio-lit-html)
 [![codecov](https://img.shields.io/codecov/c/github/playerla/flask-socketio-lit-html?style=for-the-badge)](https://codecov.io/gh/playerla/flask-socketio-lit-html)
@@ -12,7 +12,11 @@
 
 # Flask-Socket.IO-lit-html
 
-Webcomponents with Flask and SocketIO [Quick Start on documentation](https://flask-socketio-lit-html.readthedocs.io/introduction.html#introduction)
+Webcomponents with Flask and SocketIO
+
+[Quick Start on documentation](https://flask-socketio-lit-html.readthedocs.io/introduction.html#introduction)
+
+[Todo App example](https://github.com/playerla/flask-wel-todoapp)
 
 ## Proof of concept project to use Webcomponents in Python Flask
 

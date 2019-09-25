@@ -30,7 +30,7 @@ Define the todo component in jinja html template
     {% endblock %}
 
 
-Create  Flask application, register your component and run it
+Create  Flask application, configure your element and run it
 
 .. code-block:: python
 
@@ -38,25 +38,30 @@ Create  Flask application, register your component and run it
         """Todo webcomponent model"""
         todo = db.Column(db.String(80))
 
-    class TodoApp(Flask):
+    class TodoApp(FlaskWelApp):
         def __init__(self):
-        """Register component with its template view and give an url for the API endpoint"""
             super(TodoApp, self).__init__(__name__)
-            Todo.register("/todo", "todo-item", "todo.html", app=self)
+            # Register <todo-item> webcomponent to use /todo/ endpoint blueprint and custom render from todo.html jinja template
+            self.register_blueprint(Todo.configure_blueprint())
+            # TodoApp main page
             self.add_url_rule('/', "TodoApp", lambda : render_template('todoapp.html'))
-            self.appIO = get_socketio()
-
-    def runApp(self):
-        self.appIO.run(self)
 
     TodoApp().runApp()
 
-See https://github.com/playerla/flask-socketio-lit-html/tree/Dev/tests/todo_app/
+Keep control of your dependencies
+
+.. code-block:: jinja
+
+    <script src="{{url_for('todo-item.static', filename='socketio-2.3.0.js')}}"></script>
+    <script src="{{url_for('todo-item.static', filename='element.js')}}"></script>
+    <script type="module" src="{{url_for('todo-item.webcomponent')}}"></script>
+
+See full example at https://github.com/playerla/flask-socketio-lit-html/tree/Dev/tests/todo_app/
 
 How it works
 ===================================================
 
-The model of the component - the Python class - is used to auto generated all the stuff when register it with :meth:`webcomponent_base.IndexModel.register`.
+The model of the component - the Python class - is used to auto generated all the stuff when configure it with :meth:`webcomponent_base.IndexModel.configure_blueprint`.
 The next html tags are then available:
 
 - <`componentname`> : The component html tag to use in .html

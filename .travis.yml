@@ -21,8 +21,11 @@ before_deploy:
   - cd $TRAVIS_BUILD_DIR
   - git config --global user.email "builds@travis-ci.com"
   - git config --global user.name "Travis CI"
+  - git fetch --tags
   - export GIT_TAG=v$(sed -n 's/version.*"\(0[^"]*\)"/\1/p' pyproject.toml)
-  - git tag | grep $GIT_TAG && travis_terminate 0 ; echo publishing on pypi
+  - echo $GIT_TAG
+  - git tag
+  - git tag | grep ^$GIT_TAG$ && travis_terminate 0 ; echo publishing on pypi
   - git tag $GIT_TAG
   - git push -q https://$publicrepotoken@github.com/playerla/flask-socketio-lit-html --tags
 deploy:

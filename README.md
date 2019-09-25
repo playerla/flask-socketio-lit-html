@@ -4,7 +4,7 @@
 
 [![Version: Alpha](https://img.shields.io/badge/version-alpha-yellow?style=for-the-badge)](.)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
-[![Pypi version](https://img.shields.io/pypi/v/flask-socketio-lit-html?style=for-the-badge)](.)
+[![Pypi version](https://img.shields.io/pypi/v/flask-socketio-lit-html?style=for-the-badge)](https://pypi.org/project/flask-socketio-lit-html/)
 [![ReadTheDocs](https://readthedocs.org/projects/flask-socketio-lit-html/badge/?version=latest&style=for-the-badge)](https://flask-socketio-lit-html.readthedocs.io/)
 [![Travis (.org)](https://img.shields.io/travis/playerla/flask-socketio-lit-html?style=for-the-badge)](https://travis-ci.org/playerla/flask-socketio-lit-html)
 [![codecov](https://img.shields.io/codecov/c/github/playerla/flask-socketio-lit-html?style=for-the-badge)](https://codecov.io/gh/playerla/flask-socketio-lit-html)
@@ -12,7 +12,11 @@
 
 # Flask-Socket.IO-lit-html
 
-Webcomponents with Flask and SocketIO [Quick Start on documentation](https://flask-socketio-lit-html.readthedocs.io/introduction.html#introduction)
+Webcomponents with Flask and SocketIO
+
+[Quick Start on documentation](https://flask-socketio-lit-html.readthedocs.io/introduction.html#introduction)
+
+[Todo App example](https://github.com/playerla/flask-wel-todoapp)
 
 ## Proof of concept project to use Webcomponents in Python Flask
 
@@ -27,7 +31,7 @@ Create user webcomponent from sqlalchemy design. GET and POST API on `/user`.
 class User(db.Model):
     username = db.Column(db.String(80), nullable=False)
 
-blueprint = User.register("/user", "user-item", "user.html")
+blueprint = User.configure_blueprint("/user", "user-item", "user.html")
 app.register_blueprint(blueprint)
 ```
 Define the webcomponent view in a jinja template
@@ -55,10 +59,10 @@ This code represent the idea behind the module, look at app.py for a working exa
 cd docs && sphinx-apidoc -o source/ ../flask_socketio_lit_html
 ```
 
-### Build package
+### Build and test package
 
 ```sh
-poetry build
+poetry build && pip3 install dist/flask_socketio_lit_html-0.1.1rc1-py3-none-any.whl --force-reinstall
 ```
 
 ### Running browser tests
@@ -67,6 +71,10 @@ cd tests ; yarn test
 ```
 Webcomponent's shadow root are disabled when running testcafe (for selecting components)
 
+## Build lit-element with rollup.js
+```sh
+cd flask_socketio_lit_html/dependencies/ && yarn && yarn build && cd ../..
+```
 ### Any questions ?
 
 [![Slack Status](https://img.shields.io/badge/slack-join-darkblue?style=for-the-badge)](https://join.slack.com/t/flasksocketio-vhj9931/shared_invite/enQtNzUwMDgzMDg5ODU3LWRhNDg4MmNmMTg2MDYwM2UxYjQ5ZDhkN2FmODY2MGI0NDU3YWNmNTdlOWZkM2YzZmZlMjdmYjNmY2JiZThhOGI)

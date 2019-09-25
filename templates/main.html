@@ -1,7 +1,8 @@
 {% extends "bootstrap/base.html" %}
 {% block title %}Users list app{% endblock %}
 {% block scripts %}
-<script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
+<script src="{{url_for('user-item.static', filename='socketio-2.3.0.js')}}"></script>
+<script src="{{url_for('user-item.static', filename='element.js')}}"></script>
 <script type="module" src="{{url_for('user-item.webcomponent')}}"></script>
 {{super()}}
 {% endblock %}

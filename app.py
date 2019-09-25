@@ -10,7 +10,7 @@ class WebcomponentApp(Flask):
     def __init__(self, db, db_file='app.db'):
         """Our example app doesn't keep contents. Drop app.db"""
         super(WebcomponentApp, self).__init__(__name__)
-        
+
         self.config['DB_FILE'] = db_file
         self.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///'+self.config['DB_FILE']
         # Database configuration
@@ -19,14 +19,14 @@ class WebcomponentApp(Flask):
         with self.app_context():
             self.db.drop_all()
             self.db.create_all()
-    
-        # classic CSS theme 
+
+        # classic CSS theme
         Bootstrap(self)
-        
+
         self.appIO = SocketIO(self, engineio_logger=True)
         init_webcomponent(self, self.db, self.appIO)
         # Register <user-item> webcomponent to use /user api endpoint with custom render from user.html
-        bluePrint = User.register("/user", "user-item", "user.html")
+        bluePrint = User.configure_blueprint("/user", "user-item", "user.html")
         self.register_blueprint(bluePrint)
 
         self.add_url_rule('/', "webComponentApp", lambda : render_template('main.html'))

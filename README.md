@@ -62,7 +62,7 @@ cd docs && sphinx-apidoc -o source/ ../flask_socketio_lit_html
 ### Build and test package
 
 ```sh
-poetry build && pip3 install dist/flask_socketio_lit_html-0.1.1rc1-py3-none-any.whl --force-reinstall
+poetry build && pip3 install dist/flask_socketio_lit_html* --force-reinstall
 ```
 
 ### Running browser tests

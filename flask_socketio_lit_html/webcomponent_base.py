@@ -128,7 +128,7 @@ class IndexModel(Model):
 
     def get_all(cls):
         """Return all index as `{'items': [list of indexes]}`"""
-        return {'items': db.session.query(cls.index).all()}
+        return {'items': [columns[0] for columns in db.session.query(cls.index).all()]}
 
 def get_socketio():
     global socketio

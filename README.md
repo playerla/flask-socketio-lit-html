@@ -67,7 +67,7 @@ poetry build && pip3 install dist/flask_socketio_lit_html* --force-reinstall
 
 ### Running browser tests
 ```sh
-cd tests ; yarn test
+cd tests ; yarn ; yarn test
 ```
 Webcomponent's shadow root are disabled when running testcafe (for selecting components)
 

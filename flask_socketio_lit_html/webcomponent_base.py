@@ -81,7 +81,7 @@ class IndexModel(Model):
         blueprint.add_url_rule(base_url, view_func=IndexModel.webcomponent,
                                defaults={
                                    # Variable for the webcomponent_base.js
-                                   'ioupdate': str(cls)+'update',
+                                   'ioupdate': element_name+'.update',
                                    'component_name': component_name,
                                    'base_url': base_url,
                                    'properties': [c.name for c in cls.__table__.columns],
@@ -123,7 +123,7 @@ class IndexModel(Model):
         """Save webcomponent instance value from json. HTTP POST."""
         item = db.session.merge(cls(**request.get_json()))
         db.session.commit()
-        socketio.emit(str(cls)+'update', item.index)
+        socketio.emit(str(cls.__name__)+'.update', item.index)
         return jsonify(index=item.index)
 
     def get_all(cls):

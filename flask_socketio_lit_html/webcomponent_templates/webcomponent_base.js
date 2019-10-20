@@ -1,7 +1,6 @@
-//import { LitElement, html, css } from './lit-element';
+const io_socket = io()
 
-var io_socket = io()
-
+const get_prop = (obj, key) => obj ? obj[key] : null;
 const get = async (url) => {
     const response = await fetch(url);
     if (response.status == 404)
@@ -99,10 +98,10 @@ window.customElements.define('{{ component_name }}', Item);
 
 class ItemForm extends Item {
     add_event() {
-        var child = document.createElement('{{ component_name }}').newItem({
+        let child = document.createElement('{{ component_name }}').newItem({
             {% for property in properties %}
             {% if property != 'index' %}
-                {{ property }}: this.shadowRoot.getElementById('{{ property }}').value,
+                {{ property }}: get_prop(this.shadowRoot.getElementById('{{ property }}'), 'value'),
             {% endif %}
             {% endfor %}
             })
@@ -112,7 +111,7 @@ class ItemForm extends Item {
     }
     change_event() {
         {% for property in properties %}
-        this.{{ property }} = this.shadowRoot.getElementById('{{ property }}').value,
+        this.{{ property }} = get_prop(this.shadowRoot.getElementById('{{ property }}'), 'value'),
         {% endfor %}
         this.set();
     };

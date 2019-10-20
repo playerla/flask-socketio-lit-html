@@ -26,3 +26,11 @@ test('Change second user', async t => {
         .click('#change-button')
         .expect(Selector('#user2').find('user-item').innerText).contains('new name');
 });
+
+test('Empty username', async t => {
+    await t
+        .click('#username')
+        .pressKey('ctrl+a delete')
+        .click('#change-button')
+        .expect(Selector('#user2').find('user-item').innerText).eql('undefined');
+});

@@ -27,8 +27,8 @@ class FlaskWelApp(Flask):
             socketio = SocketIO(self)
         self.appIO = socketio
 
-    def runApp(self):
-        self.appIO.run(self)
+    def runApp(self, **kwargs):
+        self.appIO.run(self, **kwargs)
 
 
 def init_webcomponent(app, sqlAlchemydb, socket_io=None):

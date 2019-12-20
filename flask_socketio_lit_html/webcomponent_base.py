@@ -7,11 +7,12 @@
         >>> # ... Flask app and extensions setup ...
         in html template: <user-item index=1></user-item>
 """
-from flask import render_template, request, jsonify, Blueprint, Flask
+from flask import render_template, request, jsonify, Blueprint, Flask, Response
 from flask_sqlalchemy import SQLAlchemy, Model
 import sqlalchemy as sa
 from sqlalchemy.ext.declarative import declared_attr
 from flask_socketio import SocketIO
+import time
 
 
 class FlaskWelApp(Flask):
@@ -43,10 +44,13 @@ def init_webcomponent(app, sqlAlchemydb, socket_io=None):
         socket_io (SocketIO): The streaming object instance.
 
     """
-    global socketio, db
+    global socketio, db, config
     socketio = socket_io or socketio or SocketIO(app)
     db = sqlAlchemydb or db
     app.config.setdefault('WEBCOMPONENT_LIGHT_DOM', 'false')
+    app.config.setdefault('WEBCOMPONENT_CACHE_MAX_AGE', '3600')
+    app.config.setdefault('WEBCOMPONENT_ETAG', '"'+str(time.time())+'"')
+    config = app.config
 
 
 # https://flask-sqlalchemy.palletsprojects.com/en/2.x/customizing/
@@ -78,7 +82,7 @@ class IndexModel(Model):
         blueprint = Blueprint(component_name, __name__,
                               template_folder='webcomponent_templates',
                               static_folder='webcomponents_static')
-        blueprint.add_url_rule(base_url, view_func=IndexModel.webcomponent,
+        blueprint.add_url_rule(base_url+'.js', view_func=IndexModel.webcomponent,
                                defaults={
                                    # Variable for the webcomponent_base.js
                                    'ioupdate': element_name+'.update',
@@ -108,7 +112,13 @@ class IndexModel(Model):
 
     def webcomponent(**env):
         """Send the webcomponent.js dependancies"""
-        return render_template(env['template'], **env), {'Content-Type': "text/javascript; charset=utf-8"}
+        if request.headers.get('If-None-Match') == config['WEBCOMPONENT_ETAG']:
+            return Response(status=304)
+        return render_template(env['template'], **env), {
+            'Content-Type': "text/javascript; charset=utf-8", 
+            'Cache-Control': "public, max-age="+config['WEBCOMPONENT_CACHE_MAX_AGE'], 
+            'Etag':config['WEBCOMPONENT_ETAG']
+        }
 
     # https://stackoverflow.com/a/11884806
     def _asdict(self):

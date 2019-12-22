@@ -47,11 +47,12 @@ class Item extends LitElement {
         })
     }
     _get() {
-        get('{{ base_url }}'+'/'+this.index).then(item => {
-            if(item)
-                this._set(item);
-            else
-                console.log("undefined item ", this.index);
+        if (this.index)
+            get('{{ base_url }}'+'/'+this.index).then(item => {
+                if(item)
+                    this._set(item);
+                else
+                    console.log("undefined item ", this.index);
     })}
     updated(changedProperties) {
         if (changedProperties.has('index')) {

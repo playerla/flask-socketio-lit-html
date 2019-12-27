@@ -27,18 +27,20 @@ class FlaskWelApp(Flask):
         if socketio is None:
             socketio = SocketIO(self)
         self.appIO = socketio
+        init_webcomponent(self)
 
     def runApp(self, **kwargs):
         self.appIO.run(self, **kwargs)
 
 
-def init_webcomponent(app, sqlAlchemydb, socket_io=None):
+def init_webcomponent(app, sqlAlchemydb=None, socket_io=None):
     """Init webcomponent with external dependancies
 
-    db store object state and socketio allows efficient
-    communication between browser and flask
+    sqlAlchemydb store object state, and socket_io allows efficient
+    communication between browser and flask's webcomponent REST API
 
     Args:
+        app (Flask): Init webcomponent with App.config values
         sqlAlchemydb (SQLAlchemy): Your database storing webcomponent state has to be
             instanciated with SQLAlchemy(app, model_class=IndexModel).
         socket_io (SocketIO): The streaming object instance.
@@ -146,3 +148,4 @@ def get_socketio():
 
 socketio = None
 db = SQLAlchemy(model_class=IndexModel)
+config = None

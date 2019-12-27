@@ -36,6 +36,7 @@ class Item extends LitElement {
         {% endfor %}
     };
     async newItem(properties) {
+        this._set(properties)
         await post('{{ base_url }}', properties).then(json => this.index = json.index);
         return this;
     };
@@ -99,16 +100,18 @@ window.customElements.define('{{ component_name }}', Item);
 
 class ItemForm extends Item {
     add_event() {
-        let child = document.createElement('{{ component_name }}').newItem({
+        let child = document.createElement('{{ component_name }}');
+        child.newItem({
             {% for property in properties %}
             {% if property != 'index' %}
                 {{ property }}: get_prop(this.shadowRoot.getElementById('{{ property }}'), 'value'),
             {% endif %}
             {% endfor %}
             })
-            .then( (newItem) => {
-                console.log("item", newItem.index, 'has been created');
+        .then( (newItem) => {
+            console.log("item", newItem.index, 'has been created');
         });
+        this.dispatchEvent(new CustomEvent('item-created', {detail: child}))
     }
     change_event() {
         {% for property in properties %}

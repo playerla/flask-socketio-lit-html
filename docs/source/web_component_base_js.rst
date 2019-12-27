@@ -12,7 +12,7 @@ This module requires the SocketIO library to be loaded
         :async:
 
         Create the new item on the backend. Use POST endpoint.
-        (Constructor method, use it directly after document.createElement call)
+        (Extends constructor method which doesn't support parameters, use it directly after document.createElement call)
 
         :param string properties: The properties dict to create the new item.
         :return: The webcomponent item with its database index set.
@@ -43,6 +43,12 @@ Example usage:
 
         Call it after form validation to update the element.
         It set properties from input field with the corresponding id. For example an input with id 'email' will set the email property.
+
+    .. method:: ItemForm.add_event()
+
+        Call it after form validation to create a new orphan :class:`Item`. 
+        Construct and post the element to the Backend with :meth:`Item.newItem()`.
+        Fire an item-created event with the newly created item: `document.getElementById('item-form').addEventListener('item-created', (e) => e.detail);`
 
 .. raw:: html
 

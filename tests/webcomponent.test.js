@@ -34,3 +34,10 @@ test('Empty username', async t => {
         .click('#change-button')
         .expect(Selector('#user2').find('user-item').innerText).eql('undefined');
 });
+
+test('Local user with event', async t => {
+    await t
+        .typeText('#username', 'Bull Will')
+        .click('#submit-button')
+        .expect(Selector('#latest').find('user-item').innerText).contains('Bull Will');
+});

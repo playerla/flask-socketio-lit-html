@@ -10,7 +10,16 @@
 <div class="container">
   <div id="user2"> user 2: <user-item index=2 ></user-item></div>
     <hr />
-  <form-user-item></form-user-item>
+  <form-user-item id='form'></form-user-item>
   <ul-user-item></ul-user-item>
+<p>Latest registered user:</p><div id='latest' style='color:red'></div>
 </div>
+<script>
+latest = document.getElementById('latest')
+document.getElementById('form').addEventListener('item-created', (e) => {
+    while (latest.firstChild)
+        latest.firstChild.remove();
+    latest.appendChild(e.detail)
+});
+</script>
 {% endblock %}

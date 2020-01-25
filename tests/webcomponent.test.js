@@ -32,7 +32,13 @@ test('Empty username', async t => {
         .click('#username')
         .pressKey('ctrl+a delete')
         .click('#change-button')
-        .expect(Selector('#user2').find('user-item').innerText).eql('undefined');
+        .expect(Selector('#user2').find('user-item').innerText).eql('[2] undefined 🗙');
+});
+
+test('Delete username', async t => {
+    await t
+        .click('#delete')
+        .expect(Selector('#user2').innerText).eql('user 2:');
 });
 
 test('Local user with event', async t => {
@@ -40,10 +46,4 @@ test('Local user with event', async t => {
         .typeText('#username', 'Bull Will')
         .click('#submit-button')
         .expect(Selector('#latest').find('user-item').innerText).contains('Bull Will');
-});
-
-test('Delete username', async t => {
-    await t
-        .click('#delete')
-        .expect(Selector('#user2').innerText).eql(' user 2: ');
 });

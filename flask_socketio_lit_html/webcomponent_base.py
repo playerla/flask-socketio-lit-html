@@ -135,14 +135,14 @@ class IndexModel(Model):
         return item._asdict() if item else ("Not found", 404)
 
     def post(cls):
-        """Save webcomponent instance value from json. HTTP POST."""
+        """Save webcomponent instance value from json. HTTP POST. Emit update signal"""
         item = db.session.merge(cls(**request.get_json()))
         db.session.commit()
         socketio.emit(str(cls.__name__)+'.update', item.index)
         return jsonify(index=item.index)
 
     def delete(cls, index):
-        """Delete webcomponent instance with index index"""
+        """Delete webcomponent instance with index index. Emit delete signal"""
         item = db.session.query(cls).filter(cls.index == index).first()
         db.session.delete(item)
         db.session.commit()

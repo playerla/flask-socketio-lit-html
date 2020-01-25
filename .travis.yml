@@ -4,12 +4,8 @@ python:
 - '3.7'
 install:
 - pip3 install -r requirements.txt poetry codecov pytest-cov
-addons:
-  apt:
-    sources:
-     - google-chrome
-    packages:
-     - google-chrome-stable
+- wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+- sudo dpkg -i google-chrome-stable_current_amd64.deb
 services:
 - xvfb
 script: python3 -m pytest --cov=./ && codecov ; cd tests ; yarn ; yarn test

@@ -21,6 +21,10 @@ This module requires the SocketIO library to be loaded
 
         Update this item on the backend. Use POST endpoint to send the instance properties values.
 
+    .. method:: Item.delete_()
+
+        Delete this item on the backend and frontend. Use DELETE on 'endpoint/<index>' resource.
+
 .. raw:: html
 
     <hr width=50 size=10>

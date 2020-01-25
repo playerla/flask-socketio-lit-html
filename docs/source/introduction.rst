@@ -73,9 +73,13 @@ Generate a Rest API
 Register the component blueprint which contains the next JSON endpoints:
 
 - GET  `/componentname` : The component implementation - a static javascript module. You can get it via url_for('componentname.webcomponent')
-- GET  `/componentname/<int:index>` : The component with the primary key `index`
 - GET  `/componentname/all` : The list of all components indexes in database
+- GET  `/componentname/<int:index>` : The component with the primary key `index`
+- DELETE  `/componentname/<int:index>` : The component with the primary key `index`
 - POST `/componentname` : The JSON new user or the user to modify if `index` key is set
+
+You can overwrite IndexModel class methods :meth:`IndexModel.get()`, :meth:`IndexModel.post()`, :meth:`IndexModel.delete()` and :meth:`IndexModel.get_all()` to implement your own API.
+An external URL could also be specified to replace `/componentname` for these four API endpoints. See :meth:`IndexModel.configure_blueprint()`
 
 Integrate lit-element in Flask jinja
 ------------------------------------

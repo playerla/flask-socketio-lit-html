@@ -61,7 +61,7 @@ class IndexModel(Model):
     __abstract__ = True
 
     @classmethod
-    def configure_blueprint(cls, base_url=None, component_name=None, template=None):
+    def configure_blueprint(cls, base_url=None, component_name=None, template=None, external_url=None):
         """ Configure element
 
         Configure the element with convenient default values.
@@ -70,6 +70,7 @@ class IndexModel(Model):
             base_url (String): API endpoint for the component. Default to /classname
             component_name (String): the registered html tag name. Default to classname (lowercase)
             template (String): Template name for the webcomponents. Default to classname.html
+            external_url (String): External url for the API. Same Resource Scheme required. Default to internal ``base_url``
 
         Returns blueprint for flask
 
@@ -84,24 +85,25 @@ class IndexModel(Model):
         blueprint = Blueprint(component_name, __name__,
                               template_folder='webcomponent_templates',
                               static_folder='webcomponents_static')
-        blueprint.add_url_rule(base_url+'.js', view_func=IndexModel.webcomponent,
+        blueprint.add_url_rule(base_url+'.js', view_func=cls.webcomponent,
                                defaults={
                                    # Variable for the webcomponent_base.js
                                    'ioupdate': element_name+'.update',
                                    'iodelete': element_name+'.delete',
                                    'component_name': component_name,
-                                   'base_url': base_url,
+                                   'base_url': external_url or base_url,
                                    'properties': [c.name for c in cls.__table__.columns],
                                    'template': template
                                })
-        blueprint.add_url_rule(base_url+'/<int:index>', view_func=IndexModel.get,
-                               defaults={'cls': cls})
-        blueprint.add_url_rule(base_url, view_func=IndexModel.post,
-                               defaults={'cls': cls}, methods=['POST'])
-        blueprint.add_url_rule(base_url+'/<int:index>', view_func=IndexModel.delete,
-                               defaults={'cls': cls}, methods=['DELETE'])
-        blueprint.add_url_rule(base_url+'/all', view_func=IndexModel.get_all,
-                               defaults={'cls': cls})
+        if not external_url:
+            blueprint.add_url_rule(base_url+'/<int:index>', view_func=cls.get,
+                                defaults={'cls': cls})
+            blueprint.add_url_rule(base_url, view_func=cls.post,
+                                defaults={'cls': cls}, methods=['POST'])
+            blueprint.add_url_rule(base_url+'/<int:index>', view_func=cls.delete,
+                                defaults={'cls': cls}, methods=['DELETE'])
+            blueprint.add_url_rule(base_url+'/all', view_func=cls.get_all,
+                                defaults={'cls': cls})
         return blueprint
 
     @declared_attr
@@ -134,19 +136,29 @@ class IndexModel(Model):
         item = db.session.query(cls).filter(cls.index == index).first()
         return item._asdict() if item else ("Not found", 404)
 
+    def emit_update(self):
+        """emit Webcomponent.update(index) SocketIO signal"""
+        socketio.emit(str(type(self).__name__)+'.update', self.index)
+
     def post(cls):
         """Save webcomponent instance value from json. HTTP POST. Emit update signal"""
         item = db.session.merge(cls(**request.get_json()))
         db.session.commit()
-        socketio.emit(str(cls.__name__)+'.update', item.index)
+        item.emit_update()
         return jsonify(index=item.index)
+
+    def emit_delete(self):
+        """emit Webcomponent.delete(index) SocketIO signal"""
+        socketio.emit(str(type(self).__name__)+'.delete', self.index)
 
     def delete(cls, index):
         """Delete webcomponent instance with index index. Emit delete signal"""
+        import sys
+        print('cls', cls)
         item = db.session.query(cls).filter(cls.index == index).first()
         db.session.delete(item)
         db.session.commit()
-        socketio.emit(str(cls.__name__)+'.delete', item.index)
+        item.emit_delete()
         return jsonify(index=index)
 
     def get_all(cls):

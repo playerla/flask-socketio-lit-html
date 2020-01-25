@@ -31,7 +31,7 @@ Create user webcomponent from sqlalchemy design. GET and POST API on `/user`.
 class User(db.Model):
     username = db.Column(db.String(80), nullable=False)
 
-blueprint = User.configure_blueprint("/user", "user-item", "user.html")
+blueprint = User.configure_blueprint("/user", "user-item", "User.html")
 app.register_blueprint(blueprint)
 ```
 Define the webcomponent view in a jinja template

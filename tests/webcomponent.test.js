@@ -41,3 +41,9 @@ test('Local user with event', async t => {
         .click('#submit-button')
         .expect(Selector('#latest').find('user-item').innerText).contains('Bull Will');
 });
+
+test('Delete username', async t => {
+    await t
+        .click('#delete')
+        .expect(Selector('#user2').innerText).eql(' user 2: ');
+});

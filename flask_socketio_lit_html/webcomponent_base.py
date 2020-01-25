@@ -88,6 +88,7 @@ class IndexModel(Model):
                                defaults={
                                    # Variable for the webcomponent_base.js
                                    'ioupdate': element_name+'.update',
+                                   'iodelete': element_name+'.delete',
                                    'component_name': component_name,
                                    'base_url': base_url,
                                    'properties': [c.name for c in cls.__table__.columns],
@@ -97,6 +98,8 @@ class IndexModel(Model):
                                defaults={'cls': cls})
         blueprint.add_url_rule(base_url, view_func=IndexModel.post,
                                defaults={'cls': cls}, methods=['POST'])
+        blueprint.add_url_rule(base_url+'/<int:index>', view_func=IndexModel.delete,
+                               defaults={'cls': cls}, methods=['DELETE'])
         blueprint.add_url_rule(base_url+'/all', view_func=IndexModel.get_all,
                                defaults={'cls': cls})
         return blueprint
@@ -137,6 +140,14 @@ class IndexModel(Model):
         db.session.commit()
         socketio.emit(str(cls.__name__)+'.update', item.index)
         return jsonify(index=item.index)
+
+    def delete(cls, index):
+        """Delete webcomponent instance with index index"""
+        item = db.session.query(cls).filter(cls.index == index).first()
+        db.session.delete(item)
+        db.session.commit()
+        socketio.emit(str(cls.__name__)+'.delete', item.index)
+        return jsonify(index=index)
 
     def get_all(cls):
         """Return all index as `{'items': [list of indexes]}`"""

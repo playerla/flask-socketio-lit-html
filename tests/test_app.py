@@ -49,6 +49,17 @@ def test_post_user(client):
     user1_response = client.get('/user/1')
     assert b'user1@example.com' in user1_response.data
 
+def test_delete_user(client):
+    new_user_response = client.post('/user', json=dict(
+        username="user1",
+        email="user1@example.com"
+    ))
+    assert b'"index":1' in new_user_response.data
+
+    user1_response = client.delete('/user/1')
+    user1_response = client.get('/user/1')
+    assert not b'user1@example.com' in user1_response.data
+
 def test_webcomponent(client):
     webcomponent = client.get('/user.js')
     assert b'user-item' in webcomponent.data

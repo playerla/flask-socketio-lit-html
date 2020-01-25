@@ -1,13 +1,14 @@
 {
   "devDependencies": {
-    "rollup": "^1.21.4",
-    "rollup-plugin-babel-minify": "^9.1.0",
+    "rollup": "^1.29.1",
+    "rollup-plugin-minify-es": "^1.1.1",
     "rollup-plugin-node-resolve": "^5.2.0"
   },
   "scripts": {
     "build": "rollup -c"
   },
   "dependencies": {
+    "lit-html": "^1.1.2",
     "lit-element": "^2.2.1"
   }
 }

@@ -73,7 +73,7 @@ Webcomponent's shadow root are disabled when running testcafe (for selecting com
 
 ## Build lit-element with rollup.js
 ```sh
-cd flask_socketio_lit_html/dependencies/ && yarn && yarn build && cd ../..
+cd dependencies/ && yarn && yarn build ; cd ..
 ```
 ### Any questions ?
 

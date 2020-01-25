@@ -18,6 +18,15 @@ const post = async (url, json) => {
     return await response.json();
 }
 
+const del = async (url, json) => {
+    const response = await fetch(url, {
+        method: 'DELETE',
+    });
+    if (response.status == 404)
+        return null;
+    return await response.json();
+}
+
 class Item extends LitElement {
     static get properties() {
         return {
@@ -49,13 +58,20 @@ class Item extends LitElement {
     }
     _get() {
         if (this.index)
-            get('{{ base_url }}'+'/'+this.index).then(item => {
+            get('{{ base_url }}/'+this.index).then(item => {
                 if(item)
                     this._set(item);
                 else
                     console.log("undefined item ", this.index);
     })}
-    updated(changedProperties) {
+    delete_() {
+        if (this.index) {
+            if (!this.hasOwnProperty('_deleted'))
+                del("{{ base_url }}/"+this.index)
+            if (this.parentNode)
+                this.parentNode.removeChild(this);
+    }
+}    updated(changedProperties) {
         if (changedProperties.has('index')) {
             // get the new item referenced by the primary key this.index
             this._get();
@@ -70,6 +86,12 @@ class Item extends LitElement {
         io_socket.on("{{ ioupdate }}", function(index) {
             if (index == element.index)
                 element._get();
+        });
+        io_socket.on("{{ iodelete }}", function(index) {
+            if (index == element.index) {
+                element._deleted = true
+                element.delete_();
+            }
         });
         this._get();
     };
@@ -118,6 +140,7 @@ class ItemForm extends Item {
         this.{{ property }} = get_prop(this.shadowRoot.getElementById('{{ property }}'), 'value'),
         {% endfor %}
         this.set();
+        this.index = undefined
     };
     render() {
         return html`
@@ -155,6 +178,12 @@ class ItemList extends LitElement {
                 items.items.push(index_update);
             }
         });
+        io_socket.on("{{ iodelete }}", function(index_deleted) {
+            if (items.items.includes(index_deleted)) {
+                items.requestUpdate('items', [...items.items]);
+                items.items.splice(items.items.indexOf(index_deleted), 1);
+            }
+        });
     };
     static get styles() {
         return css`
@@ -167,7 +196,7 @@ class ItemList extends LitElement {
     }
     {{ WEBCOMPONENT_LIGHT_DOM() }}
     render() {
-        return html`<ul>${this.items.map((index) => html`<li><{{ component_name }} index=${index}></{{ component_name }}></li>`)}</ul>`;
+        return html`<ul>${repeat(this.items, (index) => index, (index) => html`<li><{{ component_name }} index=${index}></{{ component_name }}></li>`)}</ul>`;
     }
 }
 window.customElements.define('ul-{{ component_name }}', ItemList);

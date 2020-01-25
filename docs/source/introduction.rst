@@ -56,7 +56,8 @@ Keep control of your dependencies
     <script src="{{url_for('todo-item.static', filename='element.js')}}"></script>
     <script type="module" src="{{url_for('todo-item.webcomponent')}}"></script>
 
-See full example at https://github.com/playerla/flask-socketio-lit-html/tree/Dev/tests/todo_app/
+Full example at https://github.com/playerla/flask-wel-todoapp/ and
+project demo at https://github.com/playerla/flask-socketio-lit-html/blob/master/app.py
 
 How it works
 ===================================================
@@ -78,8 +79,8 @@ Register the component blueprint which contains the next JSON endpoints:
 - DELETE  `/componentname/<int:index>` : The component with the primary key `index`
 - POST `/componentname` : The JSON new user or the user to modify if `index` key is set
 
-You can overwrite IndexModel class methods :meth:`IndexModel.get()`, :meth:`IndexModel.post()`, :meth:`IndexModel.delete()` and :meth:`IndexModel.get_all()` to implement your own API.
-An external URL could also be specified to replace `/componentname` for these four API endpoints. See :meth:`IndexModel.configure_blueprint()`
+You can overwrite IndexModel class methods :meth:`get()`, :meth:`post()`, :meth:`delete()` and :meth:`get_all()` to implement your own API.
+An external URL could also be specified to replace `/componentname` for these four API endpoints. See :meth:`webcomponent_base.IndexModel.configure_blueprint()`
 
 Integrate lit-element in Flask jinja
 ------------------------------------

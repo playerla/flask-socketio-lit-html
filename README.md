@@ -48,6 +48,8 @@ Display the second user of your database with live update:
 
 This code represent the idea behind the module, look at app.py for a working example. Project may be modeled on [wtforms-alchemy](https://github.com/kvesteri/wtforms-alchemy)
 
+[![Remix on Glitch](https://cdn.gomix.com/f3620a78-0ad3-4f81-a271-c8a4faa20f86%2Fremix-button.svg)](https://glitch.com/edit/#!/remix/flask-socketio-lit-html)
+
 ## Contribute : Pull requests are welcome !
 
 [![Edit with Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/playerla/flask-socketio-lit-html/tree/Dev)

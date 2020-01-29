@@ -142,6 +142,12 @@ class ItemForm extends Item {
         this.set();
         this.index = undefined
     };
+    static get styles() {
+        return [css`
+        {% block style_form %}
+        {% endblock %}
+        `, super.styles];
+    }
     render() {
         return html`
         {% block form %}

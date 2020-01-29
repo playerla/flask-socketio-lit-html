@@ -89,6 +89,7 @@ The webcomponent inherit from lit-element, business methods have to be overwritt
 - `render` : the HTML view of the component
 - `style` : CSS for the component - Global CSS is ignored with shadow DOM
 - `form` : an html form which can be used to create component or modify one
+- `style_form` : CSS for the form - by default ItemForm inerit the first `style` block
 
 Update html on server side data changes
 ---------------------------------------

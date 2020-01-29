@@ -4,6 +4,8 @@
 <script src="{{url_for('user-item.static', filename='socketio-2.3.0.js')}}"></script>
 <script src="{{url_for('user-item.static', filename='element.js')}}"></script>
 <script type="module" src="{{url_for('user-item.webcomponent')}}"></script>
+<script type="module" src="{{url_for('car-item.webcomponent')}}"></script>
+<script type="module" src="{{url_for('api-item.webcomponent')}}"></script>
 {{super()}}
 {% endblock %}
 {% block content %}
@@ -13,6 +15,11 @@
   <form-user-item id='form'></form-user-item>
   <ul-user-item></ul-user-item>
 <p>Latest registered user:</p><div id='latest' style='color:red'></div>
+</div>
+<div class="container">
+<p><car-item index=1 ></car-item></p>
+<p><api-item index=1 ></value-item></p>
+<p><api-item index=2 ></value-item></p>
 </div>
 <script>
 latest = document.getElementById('latest')

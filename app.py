@@ -23,19 +23,28 @@ class WebcomponentApp(Flask):
         # classic CSS theme
         Bootstrap(self)
 
+        # Pluggable components using socketIO
         self.appIO = SocketIO(self, engineio_logger=True)
         init_webcomponent(self, self.db, self.appIO)
         # Register <user-item> webcomponent to use /user api endpoint with custom render from user.html
-        bluePrint = User.configure_blueprint("/user", "user-item", "User.html")
-        # You could also use any external_url with the same API scheme
-        # bluePrint = User.configure_blueprint(external_url='/fake')
-        self.register_blueprint(bluePrint)
+        userBluePrint = User.configure_blueprint("/user", "user-item", "user.html")
+        self.register_blueprint(userBluePrint)
 
+        # Register <car-item> webcomponent to use /car api endpoint with custom render from car.html (using default values from classname)
+        carBluePrint = Car.configure_blueprint()
+        self.register_blueprint(carBluePrint)
+
+        # You could also use any external_url with the same API scheme
+        apiBluePrint = Api.configure_blueprint(external_url='/api')
+        self.register_blueprint(apiBluePrint)
+        self.add_url_rule('/api/<int:index>', 'GET', lambda index: {'index':index,'value':'value2'})
+        self.add_url_rule('/api/<int:index>', 'DELETE', lambda index: {'index':index}, methods=['DELETE'])
+        self.add_url_rule('/api', 'POST', lambda: {'index':1}, methods=['POST'])
+        self.add_url_rule('/api/all', 'ALL', lambda: {'items':[1,2,3]})
+
+        # Your application
         self.add_url_rule('/', "webComponentApp", lambda : render_template('main.html'))
-        self.add_url_rule('/fake/<int:index>', 'GET', lambda index: {'index':index,'username':'name','email':'@'})
-        self.add_url_rule('/fake/<int:index>', 'DELETE', lambda index: {'index':index}, methods=['DELETE'])
-        self.add_url_rule('/fake', 'POST', lambda: {'index':1}, methods=['POST'])
-        self.add_url_rule('/fake/all', 'ALL', lambda: {'items':[1,2,3]})
+
 
     def runApp(self):
         self.appIO.run(self)
@@ -50,5 +59,20 @@ class User(db.Model):
         print(index, "have been deleted")
         return super().delete(cls, index)
 
+
+class Car(db.Model):
+    """User webcomponent model"""
+    color = db.Column(db.String(80), nullable=False, default='Blue')
+
+
+class Api(db.Model):
+    value = db.Column(db.String(80), nullable=False)
+    
+
 if __name__ == "__main__":
-    WebcomponentApp(db).runApp()
+    app = WebcomponentApp(db)
+    with app.app_context():
+        db.session.add(Car())
+        db.session.add(Api(value="value1"))
+        db.session.commit()
+    app.runApp()

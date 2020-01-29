@@ -75,21 +75,21 @@ class IndexModel(Model):
         Returns blueprint for flask
 
         """
-        element_name = cls.__name__
+        cls.__element_name = cls.__name__.lower()
         if base_url is None:
-            base_url = '/'+element_name
+            base_url = '/'+cls.__element_name
         if component_name is None:
-            component_name = element_name.lower()+'-item'
+            component_name = cls.__element_name+'-item'
         if template is None:
-            template = element_name+'.html'
+            template = cls.__element_name+'.html'
         blueprint = Blueprint(component_name, __name__,
                               template_folder='webcomponent_templates',
                               static_folder='webcomponents_static')
         blueprint.add_url_rule(base_url+'.js', view_func=cls.webcomponent,
                                defaults={
                                    # Variable for the webcomponent_base.js
-                                   'ioupdate': element_name+'.update',
-                                   'iodelete': element_name+'.delete',
+                                   'ioupdate': cls.__element_name+'.update',
+                                   'iodelete': cls.__element_name+'.delete',
                                    'component_name': component_name,
                                    'base_url': external_url or base_url,
                                    'properties': [c.name for c in cls.__table__.columns],
@@ -138,7 +138,7 @@ class IndexModel(Model):
 
     def emit_update(self):
         """emit Webcomponent.update(index) SocketIO signal"""
-        socketio.emit(str(type(self).__name__)+'.update', self.index)
+        socketio.emit(str(type(self).__element_name)+'.update', self.index)
 
     def post(cls):
         """Save webcomponent instance value from json. HTTP POST. Emit update signal"""
@@ -149,7 +149,7 @@ class IndexModel(Model):
 
     def emit_delete(self):
         """emit Webcomponent.delete(index) SocketIO signal"""
-        socketio.emit(str(type(self).__name__)+'.delete', self.index)
+        socketio.emit(str(type(self).__element_name)+'.delete', self.index)
 
     def delete(cls, index):
         """Delete webcomponent instance with index index. Emit delete signal"""

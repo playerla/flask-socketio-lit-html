@@ -16,7 +16,7 @@ import time
 
 
 class FlaskWelApp(Flask):
-    def __init__(self, __name__):
+    def __init__(self, __name__, cors_allowed_origins=[]):
         super(FlaskWelApp, self).__init__(__name__)
         self.appIO = get_socketio()
         # Default to In-memory database in register
@@ -25,7 +25,7 @@ class FlaskWelApp(Flask):
             db.create_all()
         global socketio
         if socketio is None:
-            socketio = SocketIO(self)
+            socketio = SocketIO(self, cors_allowed_origins=cors_allowed_origins)
         self.appIO = socketio
         init_webcomponent(self)
 

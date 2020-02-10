@@ -24,7 +24,7 @@ class WebcomponentApp(Flask):
         Bootstrap(self)
 
         # Pluggable components using socketIO
-        self.appIO = SocketIO(self, engineio_logger=True)
+        self.appIO = SocketIO(self, engineio_logger=True, cors_allowed_origins="*")
         init_webcomponent(self, self.db, self.appIO)
         # Register <user-item> webcomponent to use /user api endpoint with custom render from user.html
         userBluePrint = User.configure_blueprint("/user", "user-item", "user.html")

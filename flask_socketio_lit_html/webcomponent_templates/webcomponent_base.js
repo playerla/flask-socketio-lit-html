@@ -1,30 +1,30 @@
 const io_socket = io()
 
 const get_prop = (obj, key) => obj ? obj[key] : null;
-const get = async (url) => {
-    const response = await fetch(url);
-    if (response.status == 404)
-        return null;
-    return await response.json();
+const api = async (endpoint, parameters= {} ) => {
+    try {
+        let response = await fetch(endpoint, parameters);
+        return response.json().catch(() => console.error('Bad response'));
+    }
+    catch(e) {
+        console.error("A network error occured");
+        throw e
+    };
 }
-const post = async (url, json) => {
-    const response = await fetch(url, {
+const get = async (index) => {
+    return api('{{ base_url }}/'+index);
+}
+const post = async (json) => {
+    return api('{{ base_url }}', {
         method: 'POST',
         headers: new Headers({ "content-type": "application/json" }),
         body: JSON.stringify(json)
     });
-    if (response.status == 404)
-        return null;
-    return await response.json();
 }
-
-const del = async (url, json) => {
-    const response = await fetch(url, {
+const del = async (index) => {
+    return api('{{ base_url }}/'+index, {
         method: 'DELETE',
     });
-    if (response.status == 404)
-        return null;
-    return await response.json();
 }
 
 class Item extends LitElement {
@@ -46,11 +46,11 @@ class Item extends LitElement {
     };
     async newItem(properties) {
         this._set(properties)
-        await post('{{ base_url }}', properties).then(json => this.index = json.index);
+        await post(properties).then(json => this.index = json.index);
         return this;
     };
     set() {
-        post('{{ base_url }}', {
+        post({
         {% for property in properties %}
            {{ property }}: this.{{ property }},
         {% endfor %}
@@ -58,7 +58,7 @@ class Item extends LitElement {
     }
     _get() {
         if (this.index)
-            get('{{ base_url }}/'+this.index).then(item => {
+            get(this.index).then(item => {
                 if(item)
                     this._set(item);
                 else
@@ -67,7 +67,7 @@ class Item extends LitElement {
     delete_() {
         if (this.index) {
             if (!this.hasOwnProperty('_deleted'))
-                del("{{ base_url }}/"+this.index)
+                del(this.index)
             if (this.parentNode)
                 this.parentNode.removeChild(this);
     }
@@ -176,7 +176,7 @@ class ItemList extends LitElement {
     constructor() {
         super();
         this.items = [];
-        get('{{ base_url }}'+'/all').then(indexes => this.items = indexes.items);
+        api('{{ base_url }}/all').then(indexes => this.items = indexes.items);
         var items = this; // Capturing element in the update callback
         io_socket.on("{{ ioupdate }}", function(index_update) {
             if (!items.items.includes(index_update)) {

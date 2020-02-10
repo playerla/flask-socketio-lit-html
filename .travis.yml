@@ -8,7 +8,7 @@ install:
 - sudo dpkg -i google-chrome-stable_current_amd64.deb
 services:
 - xvfb
-script: python3 -m pytest --cov=./ && codecov ; cd tests ; yarn ; yarn test
+script: python3 -m pytest --cov=./ && codecov && cd tests && yarn && yarn test
 branches:
   only:
   - master

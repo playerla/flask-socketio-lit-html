@@ -78,6 +78,7 @@ Register the component blueprint which contains the next JSON endpoints:
 - GET  `/componentname/<int:index>` : The component with the primary key `index`
 - DELETE  `/componentname/<int:index>` : The component with the primary key `index`
 - POST `/componentname` : The JSON new user or the user to modify if `index` key is set
+- GET `/componentname/dump` : The full dump of the database. Performance warning: use once and only if you planned to go offline. 
 
 You can overwrite IndexModel class methods :meth:`get()`, :meth:`post()`, :meth:`delete()` and :meth:`get_all()` to implement your own API.
 An external URL could also be specified to replace `/componentname` for these four API endpoints. See :meth:`webcomponent_base.IndexModel.configure_blueprint()`
@@ -95,3 +96,9 @@ Update html on server side data changes
 ---------------------------------------
 A socketio message is sent by the server to the component JS module after a POST request completes. Something like `<class '__main__.User'>update`: name is
 cls+'update' where cls is your python component class. The message is the new or updated index, then the component updates itself with a GET call.
+
+Cache and update strategy
+---------------------------------------
+:meth:`Item._get()` read cache before any network request. If the key `webcomponent-item.index` matches then it is used.
+GET `/componentname/<int:index>` and POST `/componentname/<int:index>` update the local sessionStorage cache on fetch success.
+You could populate sessionStorage with GET `/componentname/dump` before loading your webcomponent.js, to write an offline application.

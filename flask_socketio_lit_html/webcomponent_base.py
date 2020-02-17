@@ -85,16 +85,16 @@ class IndexModel(Model):
         blueprint = Blueprint(component_name, __name__,
                               template_folder='webcomponent_templates',
                               static_folder='webcomponents_static')
-        blueprint.add_url_rule(base_url+'.js', view_func=cls.webcomponent,
-                               defaults={
-                                   # Variable for the webcomponent_base.js
-                                   'ioupdate': cls.__element_name+'.update',
-                                   'iodelete': cls.__element_name+'.delete',
-                                   'component_name': component_name,
-                                   'base_url': external_url or base_url,
-                                   'properties': [c.name for c in cls.__table__.columns],
-                                   'template': template
-                               })
+        environment = {
+            # Variable for the webcomponent_base.js
+            'ioupdate': cls.__element_name+'.update',
+            'iodelete': cls.__element_name+'.delete',
+            'component_name': component_name,
+            'base_url': external_url or base_url,
+            'properties': [c.name for c in cls.__table__.columns],
+            'template': template,
+        }
+        blueprint.add_url_rule(base_url+'.js', view_func=cls.webcomponent, defaults=environment)
         if not external_url:
             blueprint.add_url_rule(base_url+'/<int:index>', view_func=cls.get,
                                 defaults={'cls': cls})
@@ -103,6 +103,8 @@ class IndexModel(Model):
             blueprint.add_url_rule(base_url+'/<int:index>', view_func=cls.delete,
                                 defaults={'cls': cls}, methods=['DELETE'])
             blueprint.add_url_rule(base_url+'/all', view_func=cls.get_all,
+                                defaults={'cls': cls})
+            blueprint.add_url_rule(base_url+'/dump', view_func=cls.dump,
                                 defaults={'cls': cls})
         return blueprint
 
@@ -119,13 +121,7 @@ class IndexModel(Model):
 
     def webcomponent(**env):
         """Send the webcomponent.js dependancies"""
-        if request.headers.get('If-None-Match') == config['WEBCOMPONENT_ETAG']:
-            return Response(status=304)
-        return render_template(env['template'], **env), {
-            'Content-Type': "text/javascript; charset=utf-8", 
-            'Cache-Control': "public, max-age="+config['WEBCOMPONENT_CACHE_MAX_AGE'], 
-            'Etag':config['WEBCOMPONENT_ETAG']
-        }
+        return _cached_template(env['template'], **env)
 
     # https://stackoverflow.com/a/11884806
     def _asdict(self):
@@ -165,9 +161,22 @@ class IndexModel(Model):
         """Return all index as `{'items': [list of indexes]}`"""
         return {'items': [columns[0] for columns in db.session.query(cls.index).all()]}
 
+    def dump(cls):
+        """Return all index as `{'items': [list of item]}`"""
+        return {'items': [item._asdict() for item in db.session.query(cls).all()]}
+
 def get_socketio():
     global socketio
     return socketio
+
+def _cached_template(template_file, **env):
+    if request.headers.get('If-None-Match') == config['WEBCOMPONENT_ETAG']:
+        return Response(status=304)
+    return render_template(template_file, **env), {
+        'Content-Type': "text/javascript; charset=utf-8", 
+        'Cache-Control': "public, max-age="+config['WEBCOMPONENT_CACHE_MAX_AGE'], 
+        'Etag':config['WEBCOMPONENT_ETAG']
+    }
 
 socketio = None
 db = SQLAlchemy(model_class=IndexModel)

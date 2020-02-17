@@ -12,16 +12,25 @@ const api = async (endpoint, parameters= {} ) => {
     };
 }
 const get = async (index) => {
-    return api('{{ base_url }}/'+index);
+    return api('{{ base_url }}/'+index).then(item => {
+        if (item)
+            sessionStorage.setItem('{{ component_name }}.'+item.index, JSON.stringify(item));
+        return item;
+    });;
 }
-const post = async (json) => {
+const post = async (item) => {
     return api('{{ base_url }}', {
-        method: 'POST',
-        headers: new Headers({ "content-type": "application/json" }),
-        body: JSON.stringify(json)
-    });
+            method: 'POST',
+            headers: new Headers({ "content-type": "application/json" }),
+            body: JSON.stringify(item)
+        }).then(json => {
+            item.index = json.index;
+            sessionStorage.setItem('{{ component_name }}.'+json.index, JSON.stringify(item));
+            return json;
+        });
 }
 const del = async (index) => {
+    sessionStorage.removeItem('{{ component_name }}.'+index);
     return api('{{ base_url }}/'+index, {
         method: 'DELETE',
     });
@@ -57,13 +66,18 @@ class Item extends LitElement {
         })
     }
     _get() {
-        if (this.index)
+        if (this.index) {
+            const cached_json = JSON.parse(sessionStorage.getItem('{{ component_name }}.'+this.index))
+            if (cached_json)
+                this._set(cached_json)
             get(this.index).then(item => {
                 if(item)
                     this._set(item);
                 else
                     console.log("undefined item ", this.index);
-    })}
+            })
+        }
+    }
     delete_() {
         if (this.index) {
             if (!this.hasOwnProperty('_deleted'))

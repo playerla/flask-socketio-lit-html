@@ -32,7 +32,7 @@ test('Empty username', async t => {
         .click('#username')
         .pressKey('ctrl+a delete')
         .click('#change-button')
-        .expect(Selector('#user2').find('user-item').innerText).eql('[2] undefined 🗙');
+        .expect(Selector('#user2').find('user-item').innerText).eql('[2] undefined x');
 });
 
 test('Delete username', async t => {

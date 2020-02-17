@@ -23,6 +23,7 @@ Webcomponents with Flask and SocketIO
 * Generate a restful API (inspired from Flask-Restful)
 * Update html on data changes through [socketio](https://socket.io/) (Inspired from Angular properties reflection)
 * Based on the powerful [lit-element library](https://lit-element.polymer-project.org/guide/start)
+* Progressive Web App compatibility: Component data cached in sessionStorage
 
 ## Usage philosophy
 

@@ -9,10 +9,6 @@ install:
 services:
 - xvfb
 script: python3 -m pytest --cov=./ && codecov && cd tests && yarn && yarn test
-branches:
-  only:
-  - master
-  - Dev
 before_deploy:
   - cd $TRAVIS_BUILD_DIR
   - git config --global user.email "builds@travis-ci.com"

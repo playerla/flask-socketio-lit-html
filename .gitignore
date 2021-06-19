@@ -3,3 +3,5 @@ docs/source/_build/
 dist/
 *.pyc
 tests/node_modules/
+dependencies/node_modules
+app.db

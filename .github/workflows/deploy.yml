@@ -1,7 +1,8 @@
 name: Upload Python Package
 
-on: [pull_request]
-
+on:
+  push:
+    branches: [ master ]
 jobs:
   deploy:
     runs-on: ubuntu-20.04

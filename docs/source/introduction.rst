@@ -52,7 +52,7 @@ Keep control of your dependencies
 
 .. code-block:: jinja
 
-    <script src="{{url_for('todo-item.static', filename='socketio-2.3.0.js')}}"></script>
+    <script src="{{url_for('todo-item.static', filename='socketio-4.1.2.js')}}"></script>
     <script src="{{url_for('todo-item.static', filename='element.js')}}"></script>
     <script type="module" src="{{url_for('todo-item.webcomponent')}}"></script>
 

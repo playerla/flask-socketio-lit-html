@@ -3,6 +3,6 @@
     "testcafe": "1.4.1"
   },
   "scripts": {
-    "test":  "yarn testcafe chrome webcomponent.test.js --app \"python ../run_test_app.py\"" 
+    "test":  "yarn testcafe chrome:headless webcomponent.test.js --app \"python ../run_test_app.py\"" 
   }
 }

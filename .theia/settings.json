@@ -1,7 +1,0 @@
-{
-   "restructuredtext.builtDocumentationPath": "${workspaceRoot}\\docs\\build\\html",
-   "restructuredtext.updateOnTextChanged"    : "true",
-   "restructuredtext.updateDelay"            : 300,
-   "restructuredtext.sphinxBuildPath": "python3 -m sphinx",
-   "restructuredtext.confPath": "${workspaceFolder}/docs/source"
-}

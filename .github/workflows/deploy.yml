@@ -1,0 +1,29 @@
+name: Upload Python Package
+
+on:
+  push:
+    branches: [ master ]
+jobs:
+  deploy:
+    runs-on: ubuntu-20.04
+    steps:
+    - uses: actions/checkout@v2
+    - name: before_deploy
+      run: |
+        git config --global user.email "actions@github.com"
+        git config --global user.name "Github Actions"
+        git fetch --tags
+        export GIT_TAG=v$(sed -n 's/version.*"\(0[^"]*\)"/\1/p' pyproject.toml)
+        echo $GIT_TAG
+        git tag
+        git tag | grep ^$GIT_TAG$ && exit 0 ; echo publishing on pypi
+        git tag $GIT_TAG
+        git push -q https://$publicrepotoken@github.com/playerla/flask-socketio-lit-html --tags
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.8'
+    - name: Install dependencies and build
+      run: pip3 install -r requirements.txt poetry
+    - name: Publish package
+      run: poetry publish --build -u __token__ -p ${{ secrets.PYPI_API_TOKEN }}

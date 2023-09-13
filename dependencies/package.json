@@ -8,7 +8,7 @@
     "build": "rollup -c"
   },
   "dependencies": {
-    "lit-html": "^1.1.2",
+    "lit-html": "^2.8.0",
     "lit-element": "^2.2.1"
   }
 }

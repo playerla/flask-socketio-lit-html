@@ -3,3 +3,4 @@ flask-sqlalchemy
 flask-socketio==5
 flask-bootstrap
 eventlet
+python-socketio>=5.14.0 # not directly required, pinned by Snyk to avoid a vulnerability
